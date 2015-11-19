@@ -10,7 +10,3 @@ public class CheckItTwiceApplication {
         SpringApplication.run(CheckItTwiceApplication.class, args);
     }
 }
-
-
-
-//This is a test comment from DukeTse
