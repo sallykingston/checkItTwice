@@ -1,8 +1,7 @@
-
 {
  "name": "checkItTwice",
  "version": "1.0.0",
- "description": "Christmas gift planning and budgeting app. You better watch out, you better not cry.",
+ "description": "Christmas gift planning and budgeting app. You better watch out, you better not cry. ",
  "main": "main.js",
  "scripts": {
    "bundle": "./node_modules/.bin/browserify main.js -o bundle.js",
