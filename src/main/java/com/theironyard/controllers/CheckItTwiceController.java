@@ -79,7 +79,7 @@ public class CheckItTwiceController {
     }
 
     @RequestMapping("/add-gift")
-    public void addGift(HttpSession session, int id, String name, BigDecimal cost) throws Exception {
+    public void addGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
@@ -90,8 +90,67 @@ public class CheckItTwiceController {
         Gift gift = new Gift();
         gift.name = name;
         gift.cost = cost;
+        gift.isPurchased = isPurchased;
         gifts.save(gift);
 
         recipient.giftList.add(gift);
     }
+
+    @RequestMapping("/add-budget")
+    public void addBudget(HttpSession session, BigDecimal budget) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findOneByUsername(username);
+        user.budget = budget;
+        users.save(user);
+    }
+
+    @RequestMapping("/edit-budget")
+    public void editBudget(HttpSession session, BigDecimal budget) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findOneByUsername(username);
+        user.budget = budget;
+        users.save(user);
+    }
+
+    @RequestMapping("/edit-gift")
+    public void editGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        Recipient recipient = recipients.findOneById(id);
+
+        Gift gift = gifts.findOne(id);
+        gift.name = name;
+        gift.cost = cost;
+        gift.isPurchased = isPurchased;
+        gifts.save(gift);
+
+        recipient.giftList.add(gift);
+    }
+
+    @RequestMapping("/delete-recipient")
+    public void deleteRecipient(HttpSession session, Integer id) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findOneByUsername(username);
+        Recipient recipient = recipients.findOneById(id);
+
+        recipients.delete(id);
+
+        user.recipientList.remove(recipient);
+    }
+
 }
