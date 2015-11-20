@@ -19,7 +19,7 @@ module.exports = Backbone.View.extend({
      var that = this;
      var headerHTML = new HeaderView();
      var footerHTML = new FooterView();
-//     var loginFormView = new LoginFormView();
+     var loginFormHTML = new LoginFormView();
 //     this.$el.find('.loginCont').html(loginFormView.render().el);
 //     var recipientCollection = new RecipientCollection();
 //     recipientCollection.fetch().then(function(){
@@ -27,9 +27,11 @@ module.exports = Backbone.View.extend({
 //       var giftCollection = new GiftCollection();
 //       giftCollection.fetch().then(function(){
 //         var giftCollectionView = new GiftCollectionView({collection: giftCollection});
-//         var giftFormHTML = new GiftFormView();
+        var giftFormHTML = new GiftFormView();
 //       });
       that.$el.find('header').html(headerHTML.render().el);
+      that.$el.find('.gifts').html(giftFormHTML.render().el);
+      that.$el.find('.loginCont').html(loginFormHTML.render().el);
       that.$el.find('footer').html(footerHTML.render().el);
 //     });
    },

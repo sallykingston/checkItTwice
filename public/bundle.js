@@ -22,8 +22,35 @@ arguments[4][1][0].apply(exports,arguments)
 },{"dup":1}],4:[function(require,module,exports){
 arguments[4][1][0].apply(exports,arguments)
 },{"dup":1}],5:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"dup":1}],6:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+var GiftModel = require('./userModel');
+module.exports = Backbone.View.extend({
+  className: 'giftForm',
+  model:null,
+  events:{
+    'click .addGift': 'addGift',
+  },
+  initialize: function(){
+    if(!this.model){
+      this.model = new GiftModel();
+    }
+  },
+  addGift: function(e){
+    e.preventDefault();
+  },
+  template: _.template(tmpl.giftForm),
+  render: function () {
+    var markup = this.template(this.model.toJSON());
+    this.$el.html(markup);
+    return this;
+  },
+});
+
+},{"./templates":17,"./userModel":18,"backbone":10,"jquery":11,"underscore":12}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ =  require('jquery');
 var _ = require('underscore');
@@ -62,7 +89,7 @@ module.exports = Backbone.View.extend({
      var that = this;
      var headerHTML = new HeaderView();
      var footerHTML = new FooterView();
-//     var loginFormView = new LoginFormView();
+     var loginFormHTML = new LoginFormView();
 //     this.$el.find('.loginCont').html(loginFormView.render().el);
 //     var recipientCollection = new RecipientCollection();
 //     recipientCollection.fetch().then(function(){
@@ -70,17 +97,46 @@ module.exports = Backbone.View.extend({
 //       var giftCollection = new GiftCollection();
 //       giftCollection.fetch().then(function(){
 //         var giftCollectionView = new GiftCollectionView({collection: giftCollection});
-//         var giftFormHTML = new GiftFormView();
+        var giftFormHTML = new GiftFormView();
 //       });
       that.$el.find('header').html(headerHTML.render().el);
+      that.$el.find('.gifts').html(giftFormHTML.render().el);
+      that.$el.find('.loginCont').html(loginFormHTML.render().el);
       that.$el.find('footer').html(footerHTML.render().el);
 //     });
    },
  });
 
 },{"./budgetFormView":1,"./footerView":2,"./giftCollection":3,"./giftCollectionView":4,"./giftFormView":5,"./headerView":6,"./loginFormView":8,"./recipientCollection":13,"./recipientCollectionView":14,"./recipientFormView":15,"backbone":10,"jquery":11,"underscore":12}],8:[function(require,module,exports){
-arguments[4][1][0].apply(exports,arguments)
-},{"dup":1}],9:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+var UserModel = require('./userModel');
+module.exports = Backbone.View.extend({
+  className:'addUser',
+  model: null,
+  events: {
+    'click .register': 'createUser',
+  },
+  initialize: function(){
+    if(!this.model){
+      this.model = new UserModel();
+    }
+  },
+  createUser: function(){
+
+  },
+  template: _.template(tmpl.regiForm),
+  render: function () {
+    var markup = this.template(this.model.toJSON());
+    this.$el.html(markup);
+    return this;
+  },
+});
+
+},{"./templates":17,"./userModel":18,"backbone":10,"jquery":11,"underscore":12}],9:[function(require,module,exports){
 var $ = require('jquery');
 var LayoutView = require('./layoutView');
 
@@ -12813,20 +12869,36 @@ module.exports = Backbone.Model.extend({
 
 },{"backbone":10}],17:[function(require,module,exports){
 module.exports = {
-
   gift: [
     "<img src='<%= cover %>'>",
     "<h3><%= giftName %></h3>",
     "<h3><%= giftCost %></h3>",
     "<h4><%= giftId %></h4>",
   ].join(''),
-
   header: [
       "<h1>Check It Twice</h1>"
   ].join(''),
-
   footer: [
       "<h1>Don't be Nawwwty</h1>"
+  ].join(''),
+  regiForm: [
+    "<form class='register' action='index.html' method='post'>",
+      "<h2 class='regUser'>Create Username: </h2>",
+      "<input type='text' name='createUser' value='' placeholder='Enter desired username'>",
+      "<h2 class='regPass'>Create Password: </h2>",
+      "<input type='text' name='createPass' value='' placeholder='Enter desired password'>",
+      "<button type='submit' name='register' class='register'>Confirm</button>",
+    "</form>",
+    "<button type='button' name='login' class='login'>Login</button>"
+  ].join(''),
+  giftForm: [
+    "<form class='register' action='index.html' method='post'>",
+      "<h2 class='giftName'>Input Gift Name: </h2>",
+      "<input type='text' name='createUser' value='' placeholder='Enter the Gift's Name'>",
+      "<h2 class='giftPrice'>Input Gift Price: </h2>",
+      "<input type='text' name='createPass' value='' placeholder='Enter the Gift's Price'>",
+      "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
+    "</form>"
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",
@@ -12837,4 +12909,21 @@ module.exports = {
   ].join(""),
 }
 
-},{}]},{},[9]);
+},{}],18:[function(require,module,exports){
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+  urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceUsers',
+  idAttribute: '_id',
+  defaults:{
+    user: '',
+    pass: '',
+    budget: '',
+    recipientList: ''
+  },
+  initialize: function(){
+
+  }
+});
+
+},{"backbone":10}]},{},[9]);
