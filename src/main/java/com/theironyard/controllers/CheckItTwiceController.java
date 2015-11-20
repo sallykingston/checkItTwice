@@ -94,4 +94,17 @@ public class CheckItTwiceController {
 
         recipient.giftList.add(gift);
     }
+
+    @RequestMapping("/add-budget")
+    public void addBudget(HttpSession session, BigDecimal budget) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findOneByUsername(username);
+        user.budget = budget;
+        users.save(user);
+    }
+
 }
