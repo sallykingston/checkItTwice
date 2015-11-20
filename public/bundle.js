@@ -101,7 +101,8 @@ module.exports = Backbone.View.extend({
 //       });
       that.$el.find('header').html(headerHTML.render().el);
       that.$el.find('.gifts').html(giftFormHTML.render().el);
-      that.$el.find('.loginCont').html(loginFormHTML.render().el);
+      that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
+      that.$el.find('.loginCont').html(loginFormHTML.renderRegi().el);
       that.$el.find('footer').html(footerHTML.render().el);
 //     });
    },
@@ -128,12 +129,18 @@ module.exports = Backbone.View.extend({
   createUser: function(){
 
   },
-  template: _.template(tmpl.regiForm),
-  render: function () {
-    var markup = this.template(this.model.toJSON());
-    this.$el.html(markup);
+  regiTemplate: _.template(tmpl.regiForm),
+  renderRegi: function(){
+    var markup = this.regiTemplate(this.model.toJSON());
+    this.$el.append(markup);
     return this;
   },
+  loginTemplate: _.template(tmpl.loginForm),
+  renderLogin: function(){
+    var markup = this.loginTemplate(this.model.toJSON());
+    this.$el.append(markup);
+    return this;
+  }
 });
 
 },{"./templates":17,"./userModel":18,"backbone":10,"jquery":11,"underscore":12}],9:[function(require,module,exports){
@@ -12891,12 +12898,20 @@ module.exports = {
     "</form>",
     "<button type='button' name='login' class='login'>Login</button>"
   ].join(''),
+  loginForm: [
+    "<form class='login' action='index.html' method='post'>",
+      "<input type='text' name='createUser' value='' placeholder='Enter Username'>",
+      "<input type='text' name='createPass' value='' placeholder='Enter Password'>",
+      "<button type='submit' name='login' class='login'>Login</button>",
+    "</form>",
+    "<button type='button' name='register' class='register'>Register</button>"
+  ].join(''),
   giftForm: [
     "<form class='register' action='index.html' method='post'>",
       "<h2 class='giftName'>Input Gift Name: </h2>",
-      "<input type='text' name='createUser' value='' placeholder='Enter the Gift's Name'>",
+      "<input type='text' name='createUser' value='' placeholder='Enter the Gifts Name'>",
       "<h2 class='giftPrice'>Input Gift Price: </h2>",
-      "<input type='text' name='createPass' value='' placeholder='Enter the Gift's Price'>",
+      "<input type='text' name='createPass' value='' placeholder='Enter the Gifts Price'>",
       "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
     "</form>"
   ].join(''),

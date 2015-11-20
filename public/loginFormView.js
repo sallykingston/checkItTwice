@@ -18,10 +18,16 @@ module.exports = Backbone.View.extend({
   createUser: function(){
 
   },
-  template: _.template(tmpl.regiForm),
-  render: function () {
-    var markup = this.template(this.model.toJSON());
-    this.$el.html(markup);
+  regiTemplate: _.template(tmpl.regiForm),
+  renderRegi: function(){
+    var markup = this.regiTemplate(this.model.toJSON());
+    this.$el.append(markup);
     return this;
   },
+  loginTemplate: _.template(tmpl.loginForm),
+  renderLogin: function(){
+    var markup = this.loginTemplate(this.model.toJSON());
+    this.$el.append(markup);
+    return this;
+  }
 });
