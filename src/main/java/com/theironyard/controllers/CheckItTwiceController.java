@@ -108,7 +108,19 @@ public class CheckItTwiceController {
         users.save(user);
     }
 
-    @RequestMapping("edit-gift")
+    @RequestMapping("/edit-budget")
+    public void editBudget(HttpSession session, BigDecimal budget) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findOneByUsername(username);
+        user.budget = budget;
+        users.save(user);
+    }
+
+    @RequestMapping("/edit-gift")
     public void editGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
