@@ -13,12 +13,12 @@ var GiftFormView = require('./giftFormView');
 var LoginFormView = require('./loginFormView');
 var RecipientFormView = require('./recipientFormView');
 
-// module.exports = Backbone.View.extend({
-//   el:'#layoutCont',
-//   initialize: function(){
-//     var that = this;
-//     var headerHTML = new HeaderView();
-//     var footerHTML = new FooterView();
+module.exports = Backbone.View.extend({
+  el:'.layoutCont',
+   initialize: function(){
+     var that = this;
+     var headerHTML = new HeaderView();
+     var footerHTML = new FooterView();
 //     var loginFormView = new LoginFormView();
 //     this.$el.find('.loginCont').html(loginFormView.render().el);
 //     var recipientCollection = new RecipientCollection();
@@ -29,8 +29,8 @@ var RecipientFormView = require('./recipientFormView');
 //         var giftCollectionView = new GiftCollectionView({collection: giftCollection});
 //         var giftFormHTML = new GiftFormView();
 //       });
-//       that.$el.find('header').html(headerHTML.render().el);
-//       that.$el.find('footer').html(footerHTML.render().el);
+      that.$el.find('header').html(headerHTML.render().el);
+      that.$el.find('footer').html(footerHTML.render().el);
 //     });
-//   },
-// });
+   },
+ });
