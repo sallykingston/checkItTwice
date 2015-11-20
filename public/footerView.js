@@ -5,7 +5,7 @@ Backbone.$ = $;
 var tmpl = require('./templates');
 
   module.exports = Backbone.View.extend({
-    initialize: function () {};
+    initialize: function () {},
     template: _.template(tmpl.footer),
     render: function () {
       var markup = this.template({
