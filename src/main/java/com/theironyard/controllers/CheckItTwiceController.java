@@ -79,7 +79,7 @@ public class CheckItTwiceController {
     }
 
     @RequestMapping("/add-gift")
-    public void addGift(HttpSession session, int id, String name, BigDecimal cost) throws Exception {
+    public void addGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
@@ -90,6 +90,7 @@ public class CheckItTwiceController {
         Gift gift = new Gift();
         gift.name = name;
         gift.cost = cost;
+        gift.isPurchased = isPurchased;
         gifts.save(gift);
 
         recipient.giftList.add(gift);
@@ -108,7 +109,7 @@ public class CheckItTwiceController {
     }
 
     @RequestMapping("edit-gift")
-    public void editGift(HttpSession session, int id, String name, BigDecimal cost) throws Exception {
+    public void editGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
@@ -119,6 +120,7 @@ public class CheckItTwiceController {
         Gift gift = gifts.findOne(id);
         gift.name = name;
         gift.cost = cost;
+        gift.isPurchased = isPurchased;
         gifts.save(gift);
 
         recipient.giftList.add(gift);
