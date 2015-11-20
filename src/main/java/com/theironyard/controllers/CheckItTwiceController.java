@@ -107,4 +107,36 @@ public class CheckItTwiceController {
         users.save(user);
     }
 
+    @RequestMapping("edit-gift")
+    public void editGift(HttpSession session, int id, String name, BigDecimal cost) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        Recipient recipient = recipients.findOneById(id);
+
+        Gift gift = gifts.findOne(id);
+        gift.name = name;
+        gift.cost = cost;
+        gifts.save(gift);
+
+        recipient.giftList.add(gift);
+    }
+
+    @RequestMapping("/delete-recipient")
+    public void deleteRecipient(HttpSession session, Integer id) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        User user = users.findOneByUsername(username);
+        Recipient recipient = recipients.findOneById(id);
+
+        recipients.delete(id);
+
+        user.recipientList.remove(recipient);
+    }
+
 }
