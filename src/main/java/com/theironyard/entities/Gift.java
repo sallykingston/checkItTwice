@@ -19,6 +19,9 @@ public class Gift {
     @Column
     public BigDecimal cost;
 
+    @Column
+    public boolean isPurchased;
+
     @ManyToOne
     public Recipient recipient;
 }
