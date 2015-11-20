@@ -8,9 +8,8 @@ var tmpl = require('./templates');
     initialize: function () {},
     template: _.template(tmpl.footer),
     render: function () {
-      var markup = this.template({
-        this.$el.html(markup);
-        return this;
-      })
+      var markup = this.template({});
+      this.$el.html(markup);
+      return this;
     }
   });
