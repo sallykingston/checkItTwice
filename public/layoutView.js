@@ -31,7 +31,8 @@ module.exports = Backbone.View.extend({
 //       });
       that.$el.find('header').html(headerHTML.render().el);
       that.$el.find('.gifts').html(giftFormHTML.render().el);
-      that.$el.find('.loginCont').html(loginFormHTML.render().el);
+      that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
+      that.$el.find('.loginCont').html(loginFormHTML.renderRegi().el);
       that.$el.find('footer').html(footerHTML.render().el);
 //     });
    },

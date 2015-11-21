@@ -21,12 +21,20 @@ module.exports = {
     "</form>",
     "<button type='button' name='login' class='login'>Login</button>"
   ].join(''),
+  loginForm: [
+    "<form class='login' action='index.html' method='post'>",
+      "<input type='text' name='createUser' value='' placeholder='Enter Username'>",
+      "<input type='text' name='createPass' value='' placeholder='Enter Password'>",
+      "<button type='submit' name='login' class='login'>Login</button>",
+    "</form>",
+    "<button type='button' name='register' class='register'>Register</button>"
+  ].join(''),
   giftForm: [
     "<form class='register' action='index.html' method='post'>",
       "<h2 class='giftName'>Input Gift Name: </h2>",
-      "<input type='text' name='createUser' value='' placeholder='Enter the Gift's Name'>",
+      "<input type='text' name='createUser' value='' placeholder='Enter the Gifts Name'>",
       "<h2 class='giftPrice'>Input Gift Price: </h2>",
-      "<input type='text' name='createPass' value='' placeholder='Enter the Gift's Price'>",
+      "<input type='text' name='createPass' value='' placeholder='Enter the Gifts Price'>",
       "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
     "</form>"
   ].join(''),
