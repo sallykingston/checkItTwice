@@ -6,7 +6,7 @@ module.exports = Backbone.Model.extend({
   urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
   idAttribute: '_id',
   defaults: {
-    name: "Buddy the Elf"
+    name: "Buddy the Elf",
     budget: 0,
     giftList: null,
 
