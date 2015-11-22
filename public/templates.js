@@ -50,7 +50,7 @@ module.exports = {
       "<input type='text' name='recipientName' value='' placeholder='Enter the Recipient's Name'>",
       "<label for='recipientBudget'>Recipient Budget</label>",
       "<input type='text' name='recipientBudget' value='' placeholder='Enter the Recipient's Budget'>",
-      "<button type='submit' name='addRecipient' class='addRecipient'>Add Recipient</button>",
+      "<button type='submit' id='addRecipientBtn' class='addRecipient'>Add Recipient</button>",
     "</form>"
   ].join(''),
 }

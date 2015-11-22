@@ -12806,7 +12806,8 @@ module.exports = Backbone.View.extend({
   },
   addAll: function () {
     this.$el.html("");
-      _.each(this.collection.models, this.addOne, this);
+    _.each(this.collection.models, this.addOne, this);
+    return this;
   },
 })
 
@@ -12820,24 +12821,29 @@ var RecipientModel = require('./recipientModel');
 
 module.exports = Backbone.View.extend({
   className:'addRecipient',
-  model: RecipientModel,
+  model: null,
   events: {
-    'click .submitRecipient': 'createUser',
+    'click #addRecipientBtn': 'createRecipient',
   },
   initialize: function(){
-
+    if(!this.model){
+      this.model = new RecipientModel();
+    }
+    console.log("made recipient form view");
   },
-  createRecipient: function(){
+  createRecipient: function(e){
+    e.preventDefault();
+    console.log("recipient added");
     var newRecipient = {
-      name: this.$el.find('form').find('input[type="recipientName"]').val(),
-      budget: this.$el.find('form').find('input[type="recipientBudget"]').val(),
+      name: this.$el.find('form').find('input[name="recipientName"]').val(),
+      budget: this.$el.find('form').find('input[name="recipientBudget"]').val(),
     };
     var newModel = new RecipientModel(newRecipient);
     newModel.save();
   },
   template: _.template(tmpl.recipientForm),
   render: function(){
-    var markup = this.loginTemplate(this.model.toJSON());
+    var markup = this.template(this.model.toJSON());
     this.$el.append(markup);
     return this;
   }
@@ -12942,10 +12948,11 @@ module.exports = Backbone.Router.extend({
     console.log("you've made it to the recipients page");
     var recipientCollection = new RecipientCollection();
     var recipientForm = new RecipientFormView();
+    $('.layoutView').html(recipientForm.render().el);
     recipientCollection.fetch().then(function () {
+      console.log("fetched");
       var recipientsView = new RecipientCollectionView(recipientCollection);
       $('#layout').html(recipientsView.addAll().el);
-      $('#form').html(recipientForm.render().el);
     });
 
   },
@@ -13009,7 +13016,7 @@ module.exports = {
       "<input type='text' name='recipientName' value='' placeholder='Enter the Recipient's Name'>",
       "<label for='recipientBudget'>Recipient Budget</label>",
       "<input type='text' name='recipientBudget' value='' placeholder='Enter the Recipient's Budget'>",
-      "<button type='submit' name='addRecipient' class='addRecipient'>Add Recipient</button>",
+      "<button type='submit' id='addRecipientBtn' class='addRecipient'>Add Recipient</button>",
     "</form>"
   ].join(''),
 }

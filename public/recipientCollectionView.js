@@ -21,6 +21,7 @@ module.exports = Backbone.View.extend({
   },
   addAll: function () {
     this.$el.html("");
-      _.each(this.collection.models, this.addOne, this);
+    _.each(this.collection.models, this.addOne, this);
+    return this;
   },
 })
