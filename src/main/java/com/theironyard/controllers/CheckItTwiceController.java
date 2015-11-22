@@ -1,5 +1,6 @@
 package com.theironyard.controllers;
 
+import com.theironyard.LoginParams;
 import com.theironyard.entities.Gift;
 import com.theironyard.entities.Recipient;
 import com.theironyard.entities.User;
@@ -10,6 +11,7 @@ import com.theironyard.services.UserRepository;
 import com.theironyard.utils.PasswordHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
@@ -46,19 +48,55 @@ public class CheckItTwiceController {
     }
 
     @RequestMapping("/login")
-    public void login(String username, String password, HttpSession session) throws Exception {
+    public void login(@RequestBody LoginParams params, HttpSession session) throws Exception {
 
-        User user = users.findOneByUsername(username);
+        User user = users.findOneByUsername(params.username);
         if (user == null) {
             user = new User();
-            user.username = username;
-            user.password = PasswordHash.createHash(password);
+            user.username = params.username;
+            user.password = PasswordHash.createHash(params.password);
             users.save(user);
-        } else if (!PasswordHash.validatePassword(password, user.password)) {
+        } else if (!PasswordHash.validatePassword(params.password, user.password)) {
             throw new Exception("Wrong password");
         }
 
-        session.setAttribute("username", username);
+        session.setAttribute("username", params.username);
+    }
+
+    @RequestMapping("/get-recipients")
+    public List<Recipient> getRecipients(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        User user = users.findOneByUsername(username);
+
+        List<Recipient> recipientsList = recipients.findAllByUserId(user.id);
+        return recipientsList;
+    }
+
+    @RequestMapping("/get-recipient")
+    public Recipient getRecipient(HttpSession session, int id) {
+        String username = (String) session.getAttribute("username");
+        User user = users.findOneByUsername(username);
+
+        Recipient recipient = recipients.findOneByUserId(id, user.id);
+        return recipient;
+    }
+
+    @RequestMapping("/get-gifts")
+    public List<Gift> getGifts(HttpSession session, int id) {
+        String username = (String) session.getAttribute("username");
+        User user = users.findOneByUsername(username);
+        Recipient recipient = recipients.findOneByUserId(id, user.id);
+        List<Gift> giftList = gifts.findAllByRecipientId(recipient.id);
+        return giftList;
+    }
+
+    @RequestMapping("get-gift")
+    public Gift getGift(HttpSession session, int id, int recipientId) {
+        String username = (String) session.getAttribute("username");
+        User user = users.findOneByUsername(username);
+        Recipient recipient = recipients.findOneByUserId(recipientId, user.id);
+        Gift gift = gifts.findOneByRecipientId(id, recipient.id);
+        return gift;
     }
 
     @RequestMapping("/add-recipient")
@@ -181,7 +219,5 @@ public class CheckItTwiceController {
         Gift gift = gifts.findOne(id);
         gifts.delete(gift);
 
-
     }
-
 }

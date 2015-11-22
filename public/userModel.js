@@ -4,10 +4,10 @@ module.exports = Backbone.Model.extend({
   urlRoot: 'login',
   idAttribute: '_id',
   defaults:{
-    user: '',
+    username: '',
     password: '',
-    budget: '',
-    recipientList: ''
+    // budget: '',
+    // recipientList: ''
   },
   initialize: function(){
 

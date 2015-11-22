@@ -21,23 +21,13 @@ module.exports = Backbone.View.extend({
     e.preventDefault();
     console.log("submitted");
     var newUser = {
-      user: this.$el.find('form').find('input[type="createUser"]').val(),
-      password: this.$el.find('form').find('input[type="createPass"]').val(),
+      username: this.$el.find('form').find('input[name="username"]').val(),
+      password: this.$el.find('form').find('input[name="password"]').val(),
     };
     var newModel = new UserModel(newUser);
     newModel.save();
-  },
-  userLogin: function(e){
-    e.preventDefault();
-    console.log("logged in");
     window.location.hash = 'recipients';
   },
-  // regiTemplate: _.template(tmpl.regiForm),
-  // renderRegi: function(){
-  //   var markup = this.regiTemplate(this.model.toJSON());
-  //   this.$el.append(markup);
-  //   return this;
-  // },
   loginTemplate: _.template(tmpl.loginForm),
   renderLogin: function(){
     var markup = this.loginTemplate(this.model.toJSON());
