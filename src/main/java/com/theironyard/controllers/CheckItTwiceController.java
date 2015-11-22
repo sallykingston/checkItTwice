@@ -32,19 +32,15 @@ public class CheckItTwiceController {
 
 
     @RequestMapping("/")
-    public String home(Model model, HttpSession session) {
+    public User home(HttpSession session) {
         String username = (String) session.getAttribute("username");
+        User user = users.findOneByUsername(username);
 
-        if (username == null) {
-            return "login";
-        }
-
-        model.addAttribute("username", username);
-        return "home";
+        return user;
     }
 
     @RequestMapping("/login")
-    public String login(String username, String password, HttpSession session) throws Exception {
+    public void login(String username, String password, HttpSession session) throws Exception {
 
         User user = users.findOneByUsername(username);
         if (user == null) {
@@ -57,8 +53,6 @@ public class CheckItTwiceController {
         }
 
         session.setAttribute("username", username);
-
-        return "redirect:/";
     }
 
     @RequestMapping("/add-recipient")
@@ -81,6 +75,7 @@ public class CheckItTwiceController {
     @RequestMapping("/add-gift")
     public void addGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
         String username = (String) session.getAttribute("username");
+
         if (username == null) {
             throw new Exception("Not logged in.");
         }
@@ -168,6 +163,19 @@ public class CheckItTwiceController {
         recipients.delete(id);
 
         user.recipientList.remove(recipient);
+    }
+
+    @RequestMapping("/delete-gift")
+    public void deleteGift(HttpSession session, Integer id) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        Gift gift = gifts.findOne(id);
+        gifts.delete(gift);
+
+
     }
 
 }
