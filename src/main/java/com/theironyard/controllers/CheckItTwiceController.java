@@ -165,4 +165,17 @@ public class CheckItTwiceController {
         user.recipientList.remove(recipient);
     }
 
+    @RequestMapping("/delete-gift")
+    public void deleteGift(HttpSession session, Integer id) throws Exception {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new Exception("Not logged in.");
+        }
+
+        Gift gift = gifts.findOne(id);
+        gifts.delete(gift);
+
+
+    }
+
 }
