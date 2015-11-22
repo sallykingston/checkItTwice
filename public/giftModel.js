@@ -10,5 +10,5 @@ var Backbone = require('backbone');
         giftId: "null"
       };
     },
-    initialize: function () {};
+    initialize: function () {}
   });

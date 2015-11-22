@@ -6,6 +6,7 @@ var FooterView = require('./footerView');
 var LoginFormView = require('./loginFormView');
 var RecipientCollection = require('./recipientCollection');
 var RecipientCollectionView = require('./recipientCollectionView');
+var RecipientFormView = require('./recipientFormView');
 
 module.exports = Backbone.Router.extend({
   routes: {
@@ -33,9 +34,11 @@ module.exports = Backbone.Router.extend({
   recipientsPage: function () {
     console.log("you've made it to the recipients page");
     var recipientCollection = new RecipientCollection();
+    var recipientForm = new RecipientFormView();
     recipientCollection.fetch().then(function () {
       var recipientsView = new RecipientCollectionView(recipientCollection);
       $('#layout').html(recipientsView.addAll().el);
+      $('#form').html(recipientForm.render().el);
     });
 
   },

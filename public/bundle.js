@@ -1,4 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -15,7 +17,94 @@ var tmpl = require('./templates');
     }
   });
 
-},{"./templates":13,"backbone":5,"jquery":6,"underscore":7}],2:[function(require,module,exports){
+},{"./templates":19,"backbone":11,"jquery":12,"underscore":13}],3:[function(require,module,exports){
+//Gift Collection
+
+var Backbone = require('backbone');
+var GiftModel = require('./giftModel');
+
+module.exports = Backbone.Collection.extend({
+    url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts',
+    model: GiftModel,
+    initialize: function () {
+    },
+    comparator: function(a){
+      return a.get("name");
+    }
+});
+
+},{"./giftModel":6,"backbone":11}],4:[function(require,module,exports){
+var Backbone = require('backbone');
+var _ = require('underscore');
+var $ = require('jquery');
+Backbone.$ = $;
+var GiftView = require('./giftCollectionView');
+var GiftModel = require('./giftModel')
+
+module.exports = Backbone.View.extend({
+  el: '.gifts',
+  initialize: function () {
+    this.addAll();
+    this.listenTo(this.collection, 'change', this.addAll);
+    this.listenTo(this.collection, 'sort', this.addAll);
+  },
+  addOne: function (giftModel) {
+    var giftView = new GiftView({model: giftModel});
+    this.$el.append(giftView.render().el);
+
+  },
+  addAll: function () {
+    this.$el.html("");
+    _.each(this.collection.models, this.addOne, this);
+  },
+})
+
+},{"./giftCollectionView":4,"./giftModel":6,"backbone":11,"jquery":12,"underscore":13}],5:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+var GiftModel = require('./userModel');
+module.exports = Backbone.View.extend({
+  className: 'giftForm',
+  model:null,
+  events:{
+    'click .addGift': 'addGift',
+  },
+  initialize: function(){
+    if(!this.model){
+      this.model = new GiftModel();
+    }
+  },
+  addGift: function(e){
+    e.preventDefault();
+  },
+  template: _.template(tmpl.giftForm),
+  render: function () {
+    var markup = this.template(this.model.toJSON());
+    this.$el.html(markup);
+    return this;
+  },
+});
+
+},{"./templates":19,"./userModel":21,"backbone":11,"jquery":12,"underscore":13}],6:[function(require,module,exports){
+var Backbone = require('backbone');
+
+  module.exports = Backbone.Model.extend({
+    urlRoot: "http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts",
+    idAttribute: "_id",
+    defaults: function () {
+      return {
+        giftName: "null",
+        giftCost: "null",
+        giftId: "null"
+      };
+    },
+    initialize: function () {}
+  });
+
+},{"backbone":11}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ =  require('jquery');
 var _ = require('underscore');
@@ -32,7 +121,50 @@ Backbone.$ = $;
       }
   });
 
-},{"./templates":13,"backbone":5,"jquery":6,"underscore":7}],3:[function(require,module,exports){
+},{"./templates":19,"backbone":11,"jquery":12,"underscore":13}],8:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var HeaderView = require('./headerView');
+var FooterView = require('./footerView');
+var RecipientCollection = require('./recipientCollection');
+var RecipientCollectionView = require('./recipientCollectionView');
+var GiftCollection = require('./giftCollection');
+var GiftCollectionView = require('./giftCollectionView');
+var BudgetFormView = require('./budgetFormView');
+var GiftFormView = require('./giftFormView');
+var LoginFormView = require('./loginFormView');
+var RecipientFormView = require('./recipientFormView');
+var UserCollection = require('./userCollection');
+
+module.exports = Backbone.View.extend({
+  el:'.layoutCont',
+   initialize: function(){
+    var that = this;
+    var headerHTML = new HeaderView();
+    var footerHTML = new FooterView();
+    var userCollection = new UserCollection();
+    var loginFormHTML = new LoginFormView();
+    this.$el.find('.loginCont').html(loginFormHTML.render().el);
+    var recipientCollection = new RecipientCollection();
+    recipientCollection.fetch().then(function(){
+    var recipientCollectionView = new RecipientCollectionView({collection: recipientCollection});
+    var giftCollection = new GiftCollection();
+    giftCollection.fetch().then(function(){
+      var giftCollectionView = new GiftCollectionView({collection: giftCollection});
+      var giftFormHTML = new GiftFormView();
+      that.$el.find('.gifts').html(giftFormHTML.render().el);
+    });
+    that.$el.find('header').html(headerHTML.render().el);
+    that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
+    // that.$el.find('.loginCont').html(loginFormHTML.renderRegi().el);
+    that.$el.find('footer').html(footerHTML.render().el);
+    });
+   },
+ });
+
+},{"./budgetFormView":1,"./footerView":2,"./giftCollection":3,"./giftCollectionView":4,"./giftFormView":5,"./headerView":7,"./loginFormView":9,"./recipientCollection":14,"./recipientCollectionView":15,"./recipientFormView":16,"./userCollection":20,"backbone":11,"jquery":12,"underscore":13}],9:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -44,35 +176,35 @@ module.exports = Backbone.View.extend({
   className:'addUser',
   model: null,
   events: {
-    'click .register': 'createUser',
-    'click .login': 'userLogin',
+    'click #loginBtn': 'createUser',
   },
   initialize: function(){
     if(!this.model){
       this.model = new UserModel();
     }
+    console.log("made login form view");
   },
-  createUser: function(){
-    // var newUser = {
-    //   user: this.$el.find('form').find('input[type="createUser"]').val(),
-    //   password: this.$el.find('form').find('input[type="createPass"]').val(),
-    // };
-    // var newModel = new UserModel(newUser);
-    // newModel.save();
-    //route to recipeint page?
+  createUser: function(e){
+    e.preventDefault();
+    console.log("submitted");
+    var newUser = {
+      user: this.$el.find('form').find('input[type="createUser"]').val(),
+      password: this.$el.find('form').find('input[type="createPass"]').val(),
+    };
+    var newModel = new UserModel(newUser);
+    newModel.save();
   },
   userLogin: function(e){
     e.preventDefault();
     console.log("logged in");
     window.location.hash = 'recipients';
-    //how do we log a user in?
   },
-  regiTemplate: _.template(tmpl.regiForm),
-  renderRegi: function(){
-    var markup = this.regiTemplate(this.model.toJSON());
-    this.$el.append(markup);
-    return this;
-  },
+  // regiTemplate: _.template(tmpl.regiForm),
+  // renderRegi: function(){
+  //   var markup = this.regiTemplate(this.model.toJSON());
+  //   this.$el.append(markup);
+  //   return this;
+  // },
   loginTemplate: _.template(tmpl.loginForm),
   renderLogin: function(){
     var markup = this.loginTemplate(this.model.toJSON());
@@ -81,19 +213,18 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./templates":13,"./userModel":14,"backbone":5,"jquery":6,"underscore":7}],4:[function(require,module,exports){
+},{"./templates":19,"./userModel":21,"backbone":11,"jquery":12,"underscore":13}],10:[function(require,module,exports){
 var $ = require('jquery');
-var Router = require('./router');
+var LayoutView = require('./layoutView');
 var Backbone = require('backbone');
 
 
 $(function () {
 
-  new Router();
-  Backbone.history.start();
+  new LayoutView();
 });
 
-},{"./router":12,"backbone":5,"jquery":6}],5:[function(require,module,exports){
+},{"./layoutView":8,"backbone":11,"jquery":12}],11:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -1991,7 +2122,7 @@ $(function () {
 }));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":6,"underscore":7}],6:[function(require,module,exports){
+},{"jquery":12,"underscore":13}],12:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -11203,7 +11334,7 @@ return jQuery;
 
 }));
 
-},{}],7:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -12753,7 +12884,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],8:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 //Recipient Collection
 
 var Backbone = require('backbone');
@@ -12770,7 +12901,7 @@ module.exports = Backbone.Collection.extend({
     }
 });
 
-},{"./recipientModel":10,"backbone":5}],9:[function(require,module,exports){
+},{"./recipientModel":17,"backbone":11}],15:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -12796,7 +12927,40 @@ module.exports = Backbone.View.extend({
   },
 })
 
-},{"./recipientModel":10,"./recipientModelView":11,"backbone":5,"jquery":6,"underscore":7}],10:[function(require,module,exports){
+},{"./recipientModel":17,"./recipientModelView":18,"backbone":11,"jquery":12,"underscore":13}],16:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+var RecipientModel = require('./recipientModel');
+
+module.exports = Backbone.View.extend({
+  className:'addRecipient',
+  model: RecipientModel,
+  events: {
+    'click .submitRecipient': 'createUser',
+  },
+  initialize: function(){
+
+  },
+  createRecipient: function(){
+    var newRecipient = {
+      name: this.$el.find('form').find('input[type="recipientName"]').val(),
+      budget: this.$el.find('form').find('input[type="recipientBudget"]').val(),
+    };
+    var newModel = new RecipientModel(newRecipient);
+    newModel.save();
+  },
+  template: _.template(tmpl.recipientForm),
+  render: function(){
+    var markup = this.loginTemplate(this.model.toJSON());
+    this.$el.append(markup);
+    return this;
+  }
+});
+
+},{"./recipientModel":17,"./templates":19,"backbone":11,"jquery":12,"underscore":13}],17:[function(require,module,exports){
 // Recipient Model
 
 var Backbone = require('backbone');
@@ -12815,7 +12979,7 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"backbone":5}],11:[function(require,module,exports){
+},{"backbone":11}],18:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -12864,56 +13028,7 @@ module.exports = Backbone.View.extend({
 
 });
 
-},{"./templates":13,"backbone":5,"jquery":6,"underscore":7}],12:[function(require,module,exports){
-var Backbone = require('backbone');
-var $ = require('jquery');
-var _ = require('underscore');
-var HeaderView = require('./headerView');
-var FooterView = require('./footerView');
-var LoginFormView = require('./loginFormView');
-var RecipientCollection = require('./recipientCollection');
-var RecipientCollectionView = require('./recipientCollectionView');
-
-module.exports = Backbone.Router.extend({
-  routes: {
-    '': 'loginPage',
-    'register': 'registerPage',
-    'recipients': 'recipientsPage',
-    'gifts': 'giftPage'
-
-  },
-  initialize: function (options) {
-    var headerHTML = new HeaderView();
-    var footerHTML = new FooterView();
-    var loginFormHTML = new LoginFormView();
-    $('header').html(headerHTML.render().el);
-    $('#layout').html(loginFormHTML.renderLogin().el);
-    $('footer').html(footerHTML.render().el);
-
-  },
-  login: function () {
-    console.log("you've made it to login!!");
-  },
-  registerPage: function(){
-
-  },
-  recipientsPage: function () {
-    console.log("you've made it to the recipients page");
-    var recipientCollection = new RecipientCollection();
-    recipientCollection.fetch().then(function () {
-      var recipientsView = new RecipientCollectionView(recipientCollection);
-      $('#layout').html(recipientsView.addAll().el);
-    });
-
-  },
-  giftPage: function () {
-    console.log("you've made it to the gifts page");
-
-  }
-
-});
-
-},{"./footerView":1,"./headerView":2,"./loginFormView":3,"./recipientCollection":8,"./recipientCollectionView":9,"backbone":5,"jquery":6,"underscore":7}],13:[function(require,module,exports){
+},{"./templates":19,"backbone":11,"jquery":12,"underscore":13}],19:[function(require,module,exports){
 module.exports = {
   gift: [
     "<img src='<%= cover %>'>",
@@ -12928,7 +13043,7 @@ module.exports = {
       "<h1>Don't be Nawwwty</h1>"
   ].join(''),
   regiForm: [
-    "<form class='register' action='index.html' method='post'>",
+    "<form class='register' action='login' method='post'>",
       "<h2 class='regUser'>Create Username: </h2>",
       "<input type='text' name='createUser' value='' placeholder='Enter desired username'>",
       "<h2 class='regPass'>Create Password: </h2>",
@@ -12938,15 +13053,14 @@ module.exports = {
     "<button type='button' name='login' class='login'>Login</button>"
   ].join(''),
   loginForm: [
-    "<form class='login' action='index.html' method='post'>",
+    "<form class='login'>",
       "<input type='text' name='username' value='' placeholder='Enter Username'>",
       "<input type='text' name='password' value='' placeholder='Enter Password'>",
-      "<button type='submit' name='login' class='login'>Login</button>",
+      "<button type='submit' name='login' id='loginBtn'>Login</button>",
     "</form>",
-    "<button type='button' name='register' class='register'>Register</button>"
   ].join(''),
   giftForm: [
-    "<form class='register' action='index.html' method='post'>",
+    "<form class='register'>",
       "<h2 class='giftName'>Input Gift Name: </h2>",
       "<input type='text' name='createUser' value='' placeholder='Enter the Gifts Name'>",
       "<h2 class='giftPrice'>Input Gift Price: </h2>",
@@ -12961,13 +13075,35 @@ module.exports = {
     // "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
+  recipientForm: [
+    "<form class='addRecipient' >",
+      "<label for='recipientName'>Recipient Name</label>",
+      "<input type='text' name='recipientName' value='' placeholder='Enter the Recipient's Name'>",
+      "<label for='recipientBudget'>Recipient Budget</label>",
+      "<input type='text' name='recipientBudget' value='' placeholder='Enter the Recipient's Budget'>",
+      "<button type='submit' name='addRecipient' class='addRecipient'>Add Recipient</button>",
+    "</form>"
+  ].join(''),
 }
 
-},{}],14:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+//Recipient Collection
+
+var Backbone = require('backbone');
+var UserModel = require('./userModel');
+
+module.exports = Backbone.Collection.extend({
+    url: 'login',
+    model: UserModel,
+    initialize: function () {
+    }
+});
+
+},{"./userModel":21,"backbone":11}],21:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-  urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceUsers',
+  urlRoot: 'login',
   idAttribute: '_id',
   defaults:{
     user: '',
@@ -12980,4 +13116,4 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"backbone":5}]},{},[4]);
+},{"backbone":11}]},{},[10]);

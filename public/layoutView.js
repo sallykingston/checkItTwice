@@ -12,28 +12,30 @@ var BudgetFormView = require('./budgetFormView');
 var GiftFormView = require('./giftFormView');
 var LoginFormView = require('./loginFormView');
 var RecipientFormView = require('./recipientFormView');
+var UserCollection = require('./userCollection');
 
 module.exports = Backbone.View.extend({
   el:'.layoutCont',
    initialize: function(){
-     var that = this;
-     var headerHTML = new HeaderView();
-     var footerHTML = new FooterView();
-     var loginFormHTML = new LoginFormView();
-//     this.$el.find('.loginCont').html(loginFormView.render().el);
-//     var recipientCollection = new RecipientCollection();
-//     recipientCollection.fetch().then(function(){
-//       var recipientCollectionView = new RecipientCollectionView({collection: recipientCollection});
-//       var giftCollection = new GiftCollection();
-//       giftCollection.fetch().then(function(){
-//         var giftCollectionView = new GiftCollectionView({collection: giftCollection});
-        var giftFormHTML = new GiftFormView();
-//       });
-      that.$el.find('header').html(headerHTML.render().el);
+    var that = this;
+    var headerHTML = new HeaderView();
+    var footerHTML = new FooterView();
+    var userCollection = new UserCollection();
+    var loginFormHTML = new LoginFormView();
+    this.$el.find('.loginCont').html(loginFormHTML.render().el);
+    var recipientCollection = new RecipientCollection();
+    recipientCollection.fetch().then(function(){
+    var recipientCollectionView = new RecipientCollectionView({collection: recipientCollection});
+    var giftCollection = new GiftCollection();
+    giftCollection.fetch().then(function(){
+      var giftCollectionView = new GiftCollectionView({collection: giftCollection});
+      var giftFormHTML = new GiftFormView();
       that.$el.find('.gifts').html(giftFormHTML.render().el);
-      that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
-      that.$el.find('.loginCont').html(loginFormHTML.renderRegi().el);
-      that.$el.find('footer').html(footerHTML.render().el);
-//     });
+    });
+    that.$el.find('header').html(headerHTML.render().el);
+    that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
+    // that.$el.find('.loginCont').html(loginFormHTML.renderRegi().el);
+    that.$el.find('footer').html(footerHTML.render().el);
+    });
    },
  });
