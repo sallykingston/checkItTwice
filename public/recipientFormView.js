@@ -4,6 +4,7 @@ Backbone.$ = $;
 var _ = require('underscore');
 var tmpl = require('./templates');
 var RecipientModel = require('./recipientModel');
+var RecipientCollectionView = require('./recipientCollectionView');
 
 module.exports = Backbone.View.extend({
   className:'addRecipient',
@@ -26,6 +27,8 @@ module.exports = Backbone.View.extend({
     };
     var newModel = new RecipientModel(newRecipient);
     newModel.save();
+    this.$el.find('form').find('input').val("");
+
   },
   template: _.template(tmpl.recipientForm),
   render: function(){

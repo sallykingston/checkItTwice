@@ -6,7 +6,7 @@ var tmpl = require('./templates');
 
 module.exports = Backbone.View.extend({
   tagName: 'article',
-  classname: 'recipient',
+  className: 'recipient',
   template: _.template(tmpl.recipient),
   events: {
     'click .glyphicon-pencil': 'editRecipientInfo',
@@ -19,13 +19,14 @@ module.exports = Backbone.View.extend({
     return this;
   },
   initialize: function () {},
-  editRecipientInfo: function () {
+  editRecipientInfo: function (e) {
     e.preventDefault();
+    console.log("editing");
     var recipientText = this.$el.find("span,h3");
     recipientText.attr("contenteditable",true);
     recipientText.toggleClass("editable");
   },
-  updateRecipient: function () {
+  updateRecipient: function (e) {
     if(e.charCode===13){
       var recipientEl = this.$el;
       var recipientText = recipientEl.find("p,h3");
@@ -37,11 +38,13 @@ module.exports = Backbone.View.extend({
       recipient.save({name: name, budget:budget});
     }
   },
-  deleteRecipient: function (){
-      var recipientEl = this.$el;
-      var recipient = this.model;
-      recipient.destroy();
-      recipientEl.remove();
+  deleteRecipient: function (e){
+    e.preventDefault();
+    console.log("deleting");
+    var recipientEl = this.$el;
+    var recipient = this.model;
+    recipient.destroy();
+    recipientEl.remove();
   }
 
 });

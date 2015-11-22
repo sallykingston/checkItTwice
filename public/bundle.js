@@ -12772,7 +12772,8 @@ var Backbone = require('backbone');
 var RecipientModel = require('./recipientModel');
 
 module.exports = Backbone.Collection.extend({
-    url: 'get-user',
+    url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
+    // url: 'get-recipients',
     model: RecipientModel,
     initialize: function () {
 
@@ -12792,12 +12793,14 @@ var RecipientModel = require('./recipientModel')
 var RecipientCollection = require('./recipientCollection');
 
 module.exports = Backbone.View.extend({
-  el: '#layoutView',
-  initialize: function () {
-    this.collection = new RecipientCollection;
+  el: '.layoutView',
+  initialize: function (collection) {
+    this.collection = collection;
+    this.collection.fetch();
+    console.log("collection", this.collection);
     this.addAll();
-    // this.listenTo(this.collection, 'change', this.addAll);
-    // this.listenTo(this.collection, 'sort', this.addAll);
+    this.listenTo(this.collection, 'add', this.addAll);
+    this.listenTo(this.collection, 'sort', this.addAll);
   },
   addOne: function (recipientModel) {
     var recipientView = new RecipientView({model: recipientModel});
@@ -12805,7 +12808,6 @@ module.exports = Backbone.View.extend({
 
   },
   addAll: function () {
-    this.$el.html("");
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
@@ -12818,6 +12820,7 @@ Backbone.$ = $;
 var _ = require('underscore');
 var tmpl = require('./templates');
 var RecipientModel = require('./recipientModel');
+var RecipientCollectionView = require('./recipientCollectionView');
 
 module.exports = Backbone.View.extend({
   className:'addRecipient',
@@ -12840,6 +12843,8 @@ module.exports = Backbone.View.extend({
     };
     var newModel = new RecipientModel(newRecipient);
     newModel.save();
+    this.$el.find('form').find('input').val("");
+
   },
   template: _.template(tmpl.recipientForm),
   render: function(){
@@ -12849,13 +12854,14 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./recipientModel":12,"./templates":15,"backbone":6,"jquery":7,"underscore":8}],12:[function(require,module,exports){
+},{"./recipientCollectionView":10,"./recipientModel":12,"./templates":15,"backbone":6,"jquery":7,"underscore":8}],12:[function(require,module,exports){
 // Recipient Model
 
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-  urlRoot: 'add-recipient',
+  urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
+  // urlRoot: 'add-recipient',
   idAttribute: '_id',
   defaults: {
     name: "Buddy the Elf",
@@ -12877,7 +12883,7 @@ var tmpl = require('./templates');
 
 module.exports = Backbone.View.extend({
   tagName: 'article',
-  classname: 'recipient',
+  className: 'recipient',
   template: _.template(tmpl.recipient),
   events: {
     'click .glyphicon-pencil': 'editRecipientInfo',
@@ -12890,13 +12896,14 @@ module.exports = Backbone.View.extend({
     return this;
   },
   initialize: function () {},
-  editRecipientInfo: function () {
+  editRecipientInfo: function (e) {
     e.preventDefault();
+    console.log("editing");
     var recipientText = this.$el.find("span,h3");
     recipientText.attr("contenteditable",true);
     recipientText.toggleClass("editable");
   },
-  updateRecipient: function () {
+  updateRecipient: function (e) {
     if(e.charCode===13){
       var recipientEl = this.$el;
       var recipientText = recipientEl.find("p,h3");
@@ -12908,11 +12915,13 @@ module.exports = Backbone.View.extend({
       recipient.save({name: name, budget:budget});
     }
   },
-  deleteRecipient: function (){
-      var recipientEl = this.$el;
-      var recipient = this.model;
-      recipient.destroy();
-      recipientEl.remove();
+  deleteRecipient: function (e){
+    e.preventDefault();
+    console.log("deleting");
+    var recipientEl = this.$el;
+    var recipient = this.model;
+    recipient.destroy();
+    recipientEl.remove();
   }
 
 });
@@ -13005,9 +13014,9 @@ module.exports = {
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",
-    "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>",
-    "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>",
-    // "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
+    "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
+    "<p>Budget: <span class = 'recBudget'><%= budget %></span></p>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
   recipientForm: [

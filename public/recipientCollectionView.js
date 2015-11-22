@@ -7,12 +7,14 @@ var RecipientModel = require('./recipientModel')
 var RecipientCollection = require('./recipientCollection');
 
 module.exports = Backbone.View.extend({
-  el: '#layoutView',
-  initialize: function () {
-    this.collection = new RecipientCollection;
+  el: '.layoutView',
+  initialize: function (collection) {
+    this.collection = collection;
+    this.collection.fetch();
+    console.log("collection", this.collection);
     this.addAll();
-    // this.listenTo(this.collection, 'change', this.addAll);
-    // this.listenTo(this.collection, 'sort', this.addAll);
+    this.listenTo(this.collection, 'add', this.addAll);
+    this.listenTo(this.collection, 'sort', this.addAll);
   },
   addOne: function (recipientModel) {
     var recipientView = new RecipientView({model: recipientModel});
@@ -20,7 +22,6 @@ module.exports = Backbone.View.extend({
 
   },
   addAll: function () {
-    this.$el.html("");
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
