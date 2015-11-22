@@ -154,7 +154,7 @@ public class CheckItTwiceController {
     }
 
     @RequestMapping("/edit-recipient")
-    public void editRecipient(HttpSession session, String name, BigDecimal budget, int id) throws Exception {
+    public void editRecipient(HttpSession session, @RequestBody RecipientParams params, int id) throws Exception {
         String username = (String) session.getAttribute("username");
         User user = users.findOneByUsername(username);
 
@@ -163,8 +163,8 @@ public class CheckItTwiceController {
         }
 
         Recipient recipient = recipients.findOne(id);
-        recipient.name = name;
-        recipient.budget = budget;
+        recipient.name = params.name;
+        recipient.budget = params.budget;
         recipients.save(recipient);
 
         //user.recipientList.add(recipient);
