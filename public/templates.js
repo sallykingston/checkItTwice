@@ -12,7 +12,7 @@ module.exports = {
       "<h1>Don't be Nawwwty</h1>"
   ].join(''),
   regiForm: [
-    "<form class='register' action='index.html' method='post'>",
+    "<form class='register' action='login' method='post'>",
       "<h2 class='regUser'>Create Username: </h2>",
       "<input type='text' name='createUser' value='' placeholder='Enter desired username'>",
       "<h2 class='regPass'>Create Password: </h2>",
@@ -22,7 +22,7 @@ module.exports = {
     "<button type='button' name='login' class='login'>Login</button>"
   ].join(''),
   loginForm: [
-    "<form class='login' action='index.html' method='post'>",
+    "<form class='login' action='login' method='post'>",
       "<input type='text' name='createUser' value='' placeholder='Enter Username'>",
       "<input type='text' name='createPass' value='' placeholder='Enter Password'>",
       "<button type='submit' name='login' class='login'>Login</button>",
