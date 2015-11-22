@@ -12789,13 +12789,15 @@ var $ = require('jquery');
 Backbone.$ = $;
 var RecipientView = require('./recipientModelView');
 var RecipientModel = require('./recipientModel')
+var RecipientCollection = require('./recipientCollection');
 
 module.exports = Backbone.View.extend({
   el: '#layoutView',
   initialize: function () {
+    this.collection = new RecipientCollection;
     this.addAll();
-    this.listenTo(this.collection, 'change', this.addAll);
-    this.listenTo(this.collection, 'sort', this.addAll);
+    // this.listenTo(this.collection, 'change', this.addAll);
+    // this.listenTo(this.collection, 'sort', this.addAll);
   },
   addOne: function (recipientModel) {
     var recipientView = new RecipientView({model: recipientModel});
@@ -12804,11 +12806,11 @@ module.exports = Backbone.View.extend({
   },
   addAll: function () {
     this.$el.html("");
-    _.each(this.collection.models, this.addOne, this);
+      _.each(this.collection.models, this.addOne, this);
   },
 })
 
-},{"./recipientModel":12,"./recipientModelView":13,"backbone":6,"jquery":7,"underscore":8}],11:[function(require,module,exports){
+},{"./recipientCollection":9,"./recipientModel":12,"./recipientModelView":13,"backbone":6,"jquery":7,"underscore":8}],11:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -12936,17 +12938,17 @@ module.exports = Backbone.Router.extend({
   registerPage: function(){
 
   },
-  // recipientsPage: function () {
-  //   console.log("you've made it to the recipients page");
-  //   var recipientCollection = new RecipientCollection();
-  //   var recipientForm = new RecipientFormView();
-  //   recipientCollection.fetch().then(function () {
-  //     var recipientsView = new RecipientCollectionView(recipientCollection);
-  //     $('#layout').html(recipientsView.addAll().el);
-  //     $('#form').html(recipientForm.render().el);
-  //   });
+  recipientsPage: function () {
+    console.log("you've made it to the recipients page");
+    var recipientCollection = new RecipientCollection();
+    var recipientForm = new RecipientFormView();
+    recipientCollection.fetch().then(function () {
+      var recipientsView = new RecipientCollectionView(recipientCollection);
+      $('#layout').html(recipientsView.addAll().el);
+      $('#form').html(recipientForm.render().el);
+    });
 
-  // },
+  },
   giftPage: function () {
     console.log("you've made it to the gifts page");
 

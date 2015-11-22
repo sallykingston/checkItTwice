@@ -24,17 +24,17 @@ module.exports = Backbone.Router.extend({
   registerPage: function(){
 
   },
-  // recipientsPage: function () {
-  //   console.log("you've made it to the recipients page");
-  //   var recipientCollection = new RecipientCollection();
-  //   var recipientForm = new RecipientFormView();
-  //   recipientCollection.fetch().then(function () {
-  //     var recipientsView = new RecipientCollectionView(recipientCollection);
-  //     $('#layout').html(recipientsView.addAll().el);
-  //     $('#form').html(recipientForm.render().el);
-  //   });
+  recipientsPage: function () {
+    console.log("you've made it to the recipients page");
+    var recipientCollection = new RecipientCollection();
+    var recipientForm = new RecipientFormView();
+    recipientCollection.fetch().then(function () {
+      var recipientsView = new RecipientCollectionView(recipientCollection);
+      $('#layout').html(recipientsView.addAll().el);
+      $('#form').html(recipientForm.render().el);
+    });
 
-  // },
+  },
   giftPage: function () {
     console.log("you've made it to the gifts page");
 
