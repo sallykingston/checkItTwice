@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 
@@ -47,7 +48,7 @@ public class CheckItTwiceController {
         return (List<User>) users.findAll();
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
     public void login(@RequestBody LoginParams params, HttpSession session) throws Exception {
 
         User user = users.findOneByUsername(params.username);
