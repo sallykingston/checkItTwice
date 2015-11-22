@@ -4,17 +4,38 @@ Backbone.$ = $;
 var _ = require('underscore');
 var HeaderView = require('./headerView');
 var FooterView = require('./footerView');
+var RecipientCollection = require('./recipientCollection');
+var RecipientCollectionView = require('./recipientCollectionView');
+var GiftCollection = require('./giftCollection');
+var GiftCollectionView = require('./giftCollectionView');
+var BudgetFormView = require('./budgetFormView');
+var GiftFormView = require('./giftFormView');
 var LoginFormView = require('./loginFormView');
+var RecipientFormView = require('./recipientFormView');
 
 module.exports = Backbone.View.extend({
-  el:'.layoutView',
+  el:'.layoutCont',
    initialize: function(){
-    var headerView = new HeaderView();
-    var footerView = new FooterView();
-    var loginFormView = new LoginFormView();
-
-    $('header').html(headerView.render().el);
-    this.$el.html(loginFormView.renderLogin().el);
-    $('footer').html(footerView.render().el);
-   }
+     var that = this;
+     var headerHTML = new HeaderView();
+     var footerHTML = new FooterView();
+     var loginFormHTML = new LoginFormView();
+     var reciFormHTML = new RecipientFormView();
+//     this.$el.find('.loginCont').html(loginFormView.render().el);
+//     var recipientCollection = new RecipientCollection();
+//     recipientCollection.fetch().then(function(){
+//       var recipientCollectionView = new RecipientCollectionView({collection: recipientCollection});
+       var giftCollection = new GiftCollection();
+       giftCollection.fetch().then(function(){
+         console.log(giftCollection);
+         var giftCollectionView = new GiftCollectionView({collection: giftCollection});
+         var giftFormHTML = new GiftFormView({collection: giftCollection});
+         that.$el.find('.gifts').html(giftFormHTML.render().el);
+       });
+      that.$el.find('header').html(headerHTML.render().el);
+      that.$el.find('.recipients').html(reciFormHTML.render().el);
+      that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
+      that.$el.find('footer').html(footerHTML.render().el);
+//     });
+   },
  });
