@@ -4,8 +4,8 @@ var Backbone = require('backbone');
 var RecipientModel = require('./recipientModel');
 
 module.exports = Backbone.Collection.extend({
-    url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
-    // url: 'get-recipients',
+    // url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
+    url: 'get-recipients',
     model: RecipientModel,
     initialize: function () {
 

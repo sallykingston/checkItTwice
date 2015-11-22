@@ -12772,8 +12772,8 @@ var Backbone = require('backbone');
 var RecipientModel = require('./recipientModel');
 
 module.exports = Backbone.Collection.extend({
-    url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
-    // url: 'get-recipients',
+    // url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
+    url: 'get-recipients',
     model: RecipientModel,
     initialize: function () {
 
@@ -12799,8 +12799,7 @@ module.exports = Backbone.View.extend({
     this.collection.fetch();
     console.log("collection", this.collection);
     this.addAll();
-    this.listenTo(this.collection, 'add', this.addAll);
-    this.listenTo(this.collection, 'sort', this.addAll);
+    // this.listenTo(this.collection, 'add', this.addAll);
   },
   addOne: function (recipientModel) {
     var recipientView = new RecipientView({model: recipientModel});
@@ -12808,6 +12807,7 @@ module.exports = Backbone.View.extend({
 
   },
   addAll: function () {
+    this.$el.find("article").remove();
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
@@ -12860,8 +12860,8 @@ module.exports = Backbone.View.extend({
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-  urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
-  // urlRoot: 'add-recipient',
+  // urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
+  urlRoot: 'add-recipient',
   idAttribute: '_id',
   defaults: {
     name: "Buddy the Elf",

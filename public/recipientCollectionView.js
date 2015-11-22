@@ -13,8 +13,7 @@ module.exports = Backbone.View.extend({
     this.collection.fetch();
     console.log("collection", this.collection);
     this.addAll();
-    this.listenTo(this.collection, 'add', this.addAll);
-    this.listenTo(this.collection, 'sort', this.addAll);
+    // this.listenTo(this.collection, 'add', this.addAll);
   },
   addOne: function (recipientModel) {
     var recipientView = new RecipientView({model: recipientModel});
@@ -22,6 +21,7 @@ module.exports = Backbone.View.extend({
 
   },
   addAll: function () {
+    this.$el.find("article").remove();
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
