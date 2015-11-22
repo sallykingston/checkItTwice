@@ -5,7 +5,7 @@ module.exports = Backbone.Model.extend({
   idAttribute: '_id',
   defaults:{
     user: '',
-    pass: '',
+    password: '',
     budget: '',
     recipientList: ''
   },

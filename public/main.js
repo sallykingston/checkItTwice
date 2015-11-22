@@ -1,6 +1,10 @@
 var $ = require('jquery');
-var LayoutView = require('./layoutView');
+var Router = require('./router');
+var Backbone = require('backbone');
+
 
 $(function () {
-  new LayoutView();
-})
+
+  new Router();
+  Backbone.history.start();
+});

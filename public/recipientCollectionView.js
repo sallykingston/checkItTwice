@@ -2,11 +2,11 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 Backbone.$ = $;
-var RecipientView = require('./recipientCollectionView');
+var RecipientView = require('./recipientModelView');
 var RecipientModel = require('./recipientModel')
 
 module.exports = Backbone.View.extend({
-  el: '.recipients',
+  el: '#layoutView',
   initialize: function () {
     this.addAll();
     this.listenTo(this.collection, 'change', this.addAll);

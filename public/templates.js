@@ -23,8 +23,8 @@ module.exports = {
   ].join(''),
   loginForm: [
     "<form class='login' action='index.html' method='post'>",
-      "<input type='text' name='createUser' value='' placeholder='Enter Username'>",
-      "<input type='text' name='createPass' value='' placeholder='Enter Password'>",
+      "<input type='text' name='username' value='' placeholder='Enter Username'>",
+      "<input type='text' name='password' value='' placeholder='Enter Password'>",
       "<button type='submit' name='login' class='login'>Login</button>",
     "</form>",
     "<button type='button' name='register' class='register'>Register</button>"
@@ -42,7 +42,7 @@ module.exports = {
     "<h3 class='recName'><%= name %></h3>",
     "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>",
-    "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
+    // "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
 }
