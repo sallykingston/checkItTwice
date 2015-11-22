@@ -24,6 +24,6 @@ public class User {
     @Column
     public BigDecimal budget;
 
-    @OneToMany(mappedBy = "user")
-    public List<Recipient> recipientList;
+//    @OneToMany(mappedBy = "user")
+//    public List<Recipient> recipientList;
 }

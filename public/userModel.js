@@ -1,13 +1,13 @@
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-  urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceUsers',
+  urlRoot: 'login',
   idAttribute: '_id',
   defaults:{
-    user: '',
-    pass: '',
-    budget: '',
-    recipientList: ''
+    username: '',
+    password: '',
+    // budget: '',
+    // recipientList: ''
   },
   initialize: function(){
 

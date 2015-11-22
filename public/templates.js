@@ -10,7 +10,7 @@ module.exports = {
       "<h1>Don't be Nawwwty</h1>"
   ].join(''),
   regiForm: [
-    "<form class='register' action='index.html' method='post'>",
+    "<form class='register' action='login' method='post'>",
       "<h2 class='regUser'>Create Username: </h2>",
       "<input type='text' name='createUser' value='' placeholder='Enter desired username'>",
       "<h2 class='regPass'>Create Password: </h2>",
@@ -20,12 +20,11 @@ module.exports = {
     "<button type='button' name='login' class='login'>Login</button>"
   ].join(''),
   loginForm: [
-    "<form class='login' action='index.html' method='post'>",
-      "<input type='text' name='createUser' value='' placeholder='Enter Username'>",
-      "<input type='text' name='createPass' value='' placeholder='Enter Password'>",
-      "<button type='submit' name='login' class='login'>Login</button>",
+    "<form class='login'>",
+      "<input type='text' name='username' value='' placeholder='Enter Username'>",
+      "<input type='text' name='password' value='' placeholder='Enter Password'>",
+      "<button type='submit' name='login' id='loginBtn'>Login</button>",
     "</form>",
-    "<button type='button' name='register' class='register'>Register</button>"
   ].join(''),
   giftForm: [
     "<form class='giftPost' action='index.html' method='post'>",
@@ -41,15 +40,16 @@ module.exports = {
     "<h3 class='recName'><%= name %></h3>",
     "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>",
-    "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
+    // "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
   recipientForm: [
-    "<form class='reciForm' action='index.html' method='post'>",
-      "<h2></h2>",
-      "<input type='text' name='reciName' value='' placeholder='Enter Recipient Name'>",
-      "<input type='text' name='budget' value='' placeholder='Enter Budget'>",
-      "<button type='submit' name='button' class='reciSubmit'>Submit</button>",
+    "<form class='addRecipient' >",
+      "<label for='recipientName'>Recipient Name</label>",
+      "<input type='text' name='recipientName' value='' placeholder='Enter the Recipient's Name'>",
+      "<label for='recipientBudget'>Recipient Budget</label>",
+      "<input type='text' name='recipientBudget' value='' placeholder='Enter the Recipient's Budget'>",
+      "<button type='submit' id='addRecipientBtn' class='addRecipient'>Add Recipient</button>",
     "</form>"
   ].join(''),
 }
