@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by alhanger on 11/19/15.
@@ -31,12 +32,17 @@ public class CheckItTwiceController {
     GiftRepository gifts;
 
 
-    @RequestMapping("/")
-    public User home(HttpSession session) {
+    @RequestMapping("/get-user")
+    public User getUser(HttpSession session) {
         String username = (String) session.getAttribute("username");
         User user = users.findOneByUsername(username);
 
         return user;
+    }
+
+    @RequestMapping("get-users")
+    public List<User> getUsers() {
+        return (List<User>) users.findAll();
     }
 
     @RequestMapping("/login")
@@ -69,7 +75,7 @@ public class CheckItTwiceController {
         recipient.budget = budget;
         recipients.save(recipient);
 
-        user.recipientList.add(recipient);
+        //user.recipientList.add(recipient);
     }
 
     @RequestMapping("/add-gift")
@@ -88,7 +94,7 @@ public class CheckItTwiceController {
         gift.isPurchased = isPurchased;
         gifts.save(gift);
 
-        recipient.giftList.add(gift);
+        //recipient.giftList.add(gift);
     }
 
     @RequestMapping("/add-budget")
@@ -117,7 +123,7 @@ public class CheckItTwiceController {
         recipient.budget = budget;
         recipients.save(recipient);
 
-        user.recipientList.add(recipient);
+        //user.recipientList.add(recipient);
     }
 
     @RequestMapping("/edit-budget")
@@ -147,7 +153,7 @@ public class CheckItTwiceController {
         gift.isPurchased = isPurchased;
         gifts.save(gift);
 
-        recipient.giftList.add(gift);
+        //recipient.giftList.add(gift);
     }
 
     @RequestMapping("/delete-recipient")
@@ -162,7 +168,7 @@ public class CheckItTwiceController {
 
         recipients.delete(id);
 
-        user.recipientList.remove(recipient);
+        //user.recipientList.remove(recipient);
     }
 
     @RequestMapping("/delete-gift")

@@ -54,15 +54,15 @@ public class CheckItTwiceApplicationTests {
 		Assert.assertTrue(users.count() == 0);
 	}
 
-	@Test
-	public void testAddRecipient() throws Exception {
-		mockMvc.perform(
-				MockMvcRequestBuilders.post("/add-recipient")
-				.param("name", "testName")
-				.param("BigDecimal", "20.00")
-		);
-
-		Assert.assertTrue(recipients.count() == 1);
-	}
+//	@Test
+//	public void testAddRecipient() throws Exception {
+//		mockMvc.perform(
+//				MockMvcRequestBuilders.post("/add-recipient")
+//				.param("name", "testName")
+//				.param("BigDecimal", "20.00")
+//		);
+//
+//		Assert.assertTrue(recipients.count() == 1);
+//	}
 
 }
