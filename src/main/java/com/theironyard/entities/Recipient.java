@@ -23,6 +23,6 @@ public class Recipient {
     @ManyToOne
     public User user;
 
-    @OneToMany(mappedBy = "recipient")
-    public List<Gift> giftList;
+//    @OneToMany(mappedBy = "recipient")
+//    public List<Gift> giftList;
 }
