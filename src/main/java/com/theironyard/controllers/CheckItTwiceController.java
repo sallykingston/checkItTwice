@@ -40,7 +40,7 @@ public class CheckItTwiceController {
         return user;
     }
 
-    @RequestMapping("get-users")
+    @RequestMapping("/get-users")
     public List<User> getUsers() {
         return (List<User>) users.findAll();
     }
@@ -85,7 +85,7 @@ public class CheckItTwiceController {
         return giftList;
     }
 
-    @RequestMapping("get-gift")
+    @RequestMapping("/get-gift")
     public Gift getGift(int id) {
         Gift gift = gifts.findOne(id);
         return gift;
