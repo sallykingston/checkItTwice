@@ -1,9 +1,7 @@
 module.exports = {
   gift: [
-    "<img src='<%= cover %>'>",
     "<h3><%= giftName %></h3>",
     "<h3><%= giftCost %></h3>",
-    "<h4><%= giftId %></h4>",
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>"
@@ -30,13 +28,14 @@ module.exports = {
     "<button type='button' name='register' class='register'>Register</button>"
   ].join(''),
   giftForm: [
-    "<form class='register' action='index.html' method='post'>",
+    "<form class='giftPost' action='index.html' method='post'>",
       "<h2 class='giftName'>Input Gift Name: </h2>",
-      "<input type='text' name='createUser' value='' placeholder='Enter the Gifts Name'>",
+      "<input type='text' name='createGift' value='' placeholder='Enter the Gifts Name'>",
       "<h2 class='giftPrice'>Input Gift Price: </h2>",
-      "<input type='text' name='createPass' value='' placeholder='Enter the Gifts Price'>",
+      "<input type='text' name='createGiftPrice' value='' placeholder='Enter the Gifts Price'>",
       "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
-    "</form>"
+    "</form>",
+    "<button type='button' name='name' class='test'>click</button>"
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",
@@ -45,4 +44,12 @@ module.exports = {
     "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
+  recipientForm: [
+    "<form class='reciForm' action='index.html' method='post'>",
+      "<h2></h2>",
+      "<input type='text' name='reciName' value='' placeholder='Enter Recipient Name'>",
+      "<input type='text' name='budget' value='' placeholder='Enter Budget'>",
+      "<button type='submit' name='button' class='reciSubmit'>Submit</button>",
+    "</form>"
+  ].join(''),
 }
