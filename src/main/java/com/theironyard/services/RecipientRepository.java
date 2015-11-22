@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface RecipientRepository extends CrudRepository <Recipient, Integer> {
     List<Recipient> findByUser(User user);
-    //Recipient findOneByUser(User user);
+    Recipient findOneByUser(User user);
 }
