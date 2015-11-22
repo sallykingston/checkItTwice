@@ -1,19 +1,20 @@
 package com.theironyard.controllers;
 
-import com.theironyard.LoginParams;
+import com.theironyard.services.GiftParams;
+import com.theironyard.services.LoginParams;
+import com.theironyard.services.RecipientParams;
 import com.theironyard.entities.Gift;
 import com.theironyard.entities.Recipient;
-import com.theironyard.entities.User;
 import com.theironyard.entities.User;
 import com.theironyard.services.GiftRepository;
 import com.theironyard.services.RecipientRepository;
 import com.theironyard.services.UserRepository;
 import com.theironyard.utils.PasswordHash;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
@@ -23,6 +24,7 @@ import java.util.List;
 /**
  * Created by alhanger on 11/19/15.
  */
+@RestController
 public class CheckItTwiceController {
 
     @Autowired
@@ -100,37 +102,37 @@ public class CheckItTwiceController {
         return gift;
     }
 
-    @RequestMapping("/add-recipient")
-    public void addRecipient(HttpSession session, String name, BigDecimal budget) throws Exception {
+    @RequestMapping(path = "/add-recipient", method = RequestMethod.POST)
+    public void addRecipient(HttpSession session, @RequestBody RecipientParams params) throws Exception {
         String username = (String) session.getAttribute("username");
         User user = users.findOneByUsername(username);
 
-        if (username == null) {
+        if (user == null) {
             throw new Exception("Not logged in.");
         }
 
         Recipient recipient = new Recipient();
-        recipient.name = name;
-        recipient.budget = budget;
+        recipient.name = params.name;
+        recipient.budget = params.budget;
         recipients.save(recipient);
 
         //user.recipientList.add(recipient);
     }
 
     @RequestMapping("/add-gift")
-    public void addGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
+    public void addGift(HttpSession session, @RequestBody GiftParams params) throws Exception {
         String username = (String) session.getAttribute("username");
 
         if (username == null) {
             throw new Exception("Not logged in.");
         }
 
-        Recipient recipient = recipients.findOneById(id);
+        //Recipient recipient = recipients.findOneById(id);
 
         Gift gift = new Gift();
-        gift.name = name;
-        gift.cost = cost;
-        gift.isPurchased = isPurchased;
+        gift.name = params.name;
+        gift.cost = params.cost;
+        gift.isPurchased = params.isPurchased;
         gifts.save(gift);
 
         //recipient.giftList.add(gift);
