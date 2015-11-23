@@ -49,7 +49,42 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./giftCollection":3,"./giftModelView":6,"./recipientModel":17,"./templates":20,"backbone":11,"jquery":12,"underscore":13}],2:[function(require,module,exports){
+},{"./giftCollection":4,"./giftModelView":7,"./recipientModel":18,"./templates":21,"backbone":12,"jquery":13,"underscore":14}],2:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+var UserModel = require('./userModel');
+module.exports = Backbone.View.extend({
+  className: 'giftForm',
+  model:null,
+  events:{
+    'submit .budgetPost': 'addBudget',
+  },
+  initialize: function(){
+    if(!this.model){
+      this.model = new UserModel();
+    }
+  },
+  addGift: function(e){
+    e.preventDefault();
+    var data = {
+      budget: this.$el.find('input[name=budget]').val(),
+    };
+    this.model.set(data);
+    var that = this;
+    this.model.save();
+  },
+  template: _.template(tmpl.budgetForm),
+  render: function () {
+    var markup = this.template(this.model.toJSON());
+    this.$el.html(markup);
+    return this;
+  },
+});
+
+},{"./templates":21,"./userModel":22,"backbone":12,"jquery":13,"underscore":14}],3:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -66,7 +101,7 @@ var tmpl = require('./templates');
     }
   });
 
-},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],3:[function(require,module,exports){
+},{"./templates":21,"backbone":12,"jquery":13,"underscore":14}],4:[function(require,module,exports){
 
 var Backbone = require('backbone');
 var GiftModel = require('./giftModel');
@@ -81,7 +116,7 @@ module.exports = Backbone.Collection.extend({
   }
 });
 
-},{"./giftModel":5,"backbone":11}],4:[function(require,module,exports){
+},{"./giftModel":6,"backbone":12}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -111,12 +146,9 @@ module.exports = Backbone.View.extend({
       name:this.$el.find('input[name=createGift]').val(),
       cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-
     if(typeof newGift.cost !== 'number'){
-      console.log('yo');
      newGift.cost = parseInt(newGift.cost);
     }
-    console.log(typeof newGift.cost);
     console.log(this.model);
     var newModel = new GiftModel(newGift);
     newModel.url = "gift/?id="+this.id;
@@ -131,7 +163,7 @@ module.exports = Backbone.View.extend({
   },
 });
 
-},{"./giftModel":5,"./templates":20,"backbone":11,"jquery":12,"underscore":13}],5:[function(require,module,exports){
+},{"./giftModel":6,"./templates":21,"backbone":12,"jquery":13,"underscore":14}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 
   module.exports = Backbone.Model.extend({
@@ -147,7 +179,7 @@ var Backbone = require('backbone');
     initialize: function () {},
   });
 
-},{"backbone":11}],6:[function(require,module,exports){
+},{"backbone":12}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -200,7 +232,7 @@ module.exports = Backbone.View.extend({
     }
   });
 
-},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],7:[function(require,module,exports){
+},{"./templates":21,"backbone":12,"jquery":13,"underscore":14}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ =  require('jquery');
 var _ = require('underscore');
@@ -210,6 +242,13 @@ Backbone.$ = $;
   module.exports = Backbone.View.extend({
       initialize: function () {},
       template: _.template(tmpl.header),
+      events:{
+        'click #recipients': 'retReci'
+      },
+      retReci: function(){
+        window.location.hash = 'recipients';
+        location.reload();
+      },
       render: function () {
         var markup = this.template({});
         this.$el.html(markup);
@@ -217,7 +256,7 @@ Backbone.$ = $;
       }
   });
 
-},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],8:[function(require,module,exports){
+},{"./templates":21,"backbone":12,"jquery":13,"underscore":14}],9:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -238,7 +277,7 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./footerView":2,"./headerView":7,"./loginFormView":9,"backbone":11,"jquery":12,"underscore":13}],9:[function(require,module,exports){
+},{"./footerView":3,"./headerView":8,"./loginFormView":10,"backbone":12,"jquery":13,"underscore":14}],10:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -277,7 +316,7 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./templates":20,"./userModel":21,"backbone":11,"jquery":12,"underscore":13}],10:[function(require,module,exports){
+},{"./templates":21,"./userModel":22,"backbone":12,"jquery":13,"underscore":14}],11:[function(require,module,exports){
 var $ = require('jquery');
 var Backbone = require('backbone');
 var Router = require('./router');
@@ -289,7 +328,7 @@ $(function () {
 
 });
 
-},{"./router":19,"backbone":11,"jquery":12}],11:[function(require,module,exports){
+},{"./router":20,"backbone":12,"jquery":13}],12:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -2187,7 +2226,7 @@ $(function () {
 }));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":12,"underscore":13}],12:[function(require,module,exports){
+},{"jquery":13,"underscore":14}],13:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -11399,7 +11438,7 @@ return jQuery;
 
 }));
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -12949,7 +12988,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 //Recipient Collection
 
 var Backbone = require('backbone');
@@ -12967,7 +13006,7 @@ module.exports = Backbone.Collection.extend({
     }
 });
 
-},{"./recipientModel":17,"backbone":11}],15:[function(require,module,exports){
+},{"./recipientModel":18,"backbone":12}],16:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -12997,7 +13036,7 @@ module.exports = Backbone.View.extend({
   },
 })
 
-},{"./recipientCollection":14,"./recipientModel":17,"./recipientModelView":18,"backbone":11,"jquery":12,"underscore":13}],16:[function(require,module,exports){
+},{"./recipientCollection":15,"./recipientModel":18,"./recipientModelView":19,"backbone":12,"jquery":13,"underscore":14}],17:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -13038,7 +13077,7 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./recipientCollectionView":15,"./recipientModel":17,"./templates":20,"backbone":11,"jquery":12,"underscore":13}],17:[function(require,module,exports){
+},{"./recipientCollectionView":16,"./recipientModel":18,"./templates":21,"backbone":12,"jquery":13,"underscore":14}],18:[function(require,module,exports){
 // Recipient Model
 
 var Backbone = require('backbone');
@@ -13060,7 +13099,7 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"backbone":11}],18:[function(require,module,exports){
+},{"backbone":12}],19:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -13118,7 +13157,7 @@ module.exports = Backbone.View.extend({
 
 });
 
-},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],19:[function(require,module,exports){
+},{"./templates":21,"backbone":12,"jquery":13,"underscore":14}],20:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var _ = require('underscore');
@@ -13130,7 +13169,7 @@ var RecipientFormView = require('./recipientFormView');
 var GiftCollectionView = require('./GiftCollectionView');
 var GiftCollection = require('./giftCollection');
 var GiftFormView = require('./giftFormView');
-
+var BudgetFormView = require('./budgetFormView');
 
 module.exports = Backbone.Router.extend({
   routes: {
@@ -13151,7 +13190,9 @@ module.exports = Backbone.Router.extend({
     console.log("you've made it to the recipients page");
     var recipientCollection = new RecipientCollection();
     var recipientForm = new RecipientFormView();
+    var budgetForm = new BudgetFormView();
     $('.layoutView').html(recipientForm.render().el);
+    $('.layoutView').append(budgetForm.render().el);
     recipientCollection.fetch().then(function () {
       console.log("fetched");
       var recipientsView = new RecipientCollectionView(recipientCollection);
@@ -13175,7 +13216,7 @@ module.exports = Backbone.Router.extend({
 
 });
 
-},{"./GiftCollectionView":1,"./giftCollection":3,"./giftFormView":4,"./layoutView":8,"./recipientCollection":14,"./recipientCollectionView":15,"./recipientFormView":16,"backbone":11,"jquery":12,"underscore":13}],20:[function(require,module,exports){
+},{"./GiftCollectionView":1,"./budgetFormView":2,"./giftCollection":4,"./giftFormView":5,"./layoutView":9,"./recipientCollection":15,"./recipientCollectionView":16,"./recipientFormView":17,"backbone":12,"jquery":13,"underscore":14}],21:[function(require,module,exports){
 module.exports = {
   gift: [
     "<h3 class = 'giftName'><%= name %></h3>",
@@ -13184,7 +13225,8 @@ module.exports = {
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
   header: [
-      "<h1>Check It Twice</h1>"
+      "<h1>Check It Twice</h1>",
+      "<button type='button' name='button' id='recipients'>Return To Recipients</button>"
   ].join(''),
   footer: [
       "<h1>Don't be Nawwwty</h1>"
@@ -13248,7 +13290,7 @@ module.exports = {
 
 }
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
@@ -13265,4 +13307,4 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"backbone":11}]},{},[10]);
+},{"backbone":12}]},{},[11]);

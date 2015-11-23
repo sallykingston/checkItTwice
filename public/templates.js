@@ -6,7 +6,8 @@ module.exports = {
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
   header: [
-      "<h1>Check It Twice</h1>"
+      "<h1>Check It Twice</h1>",
+      "<button type='button' name='button' id='recipients'>Return To Recipients</button>"
   ].join(''),
   footer: [
       "<h1>Don't be Nawwwty</h1>"
