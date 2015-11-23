@@ -3,6 +3,37 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 Backbone.$ = $;
+var GiftModelView = require('./giftModelView');
+var GiftCollection = require('./giftCollection');
+
+module.exports = Backbone.View.extend({
+  el: '.giftsList',
+  collection: null,
+  initialize: function (collection, id) {
+    this.collection = collection;
+    this.collection.fetch(id);
+    this.addAll();
+    this.recipientID = id;
+    this.listenTo(this.collection, 'add', this.addAll);
+  },
+  addOne: function (model) {
+    console.log('fire');
+    var giftModelView = new GiftModelView({model: model});
+    this.$el.append(giftModelView.render().el);
+  },
+  addAll: function () {
+    console.log('fire');
+    $('.giftsList').html('');
+    _.each(this.collection.models, this.addOne, this);
+    return this;
+  }
+});
+
+},{"./giftCollection":3,"./giftModelView":6,"backbone":11,"jquery":12,"underscore":13}],2:[function(require,module,exports){
+var Backbone = require('backbone');
+var _ = require('underscore');
+var $ = require('jquery');
+Backbone.$ = $;
 var tmpl = require('./templates');
 
   module.exports = Backbone.View.extend({
@@ -15,7 +46,95 @@ var tmpl = require('./templates');
     }
   });
 
-},{"./templates":15,"backbone":6,"jquery":7,"underscore":8}],2:[function(require,module,exports){
+},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],3:[function(require,module,exports){
+
+var Backbone = require('backbone');
+var GiftModel = require('./giftModel');
+module.exports = Backbone.Collection.extend({
+  url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts2',
+  model: GiftModel,
+  initialize: function(){
+  }
+});
+
+},{"./giftModel":5,"backbone":11}],4:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+var GiftModel = require('./giftModel');
+module.exports = Backbone.View.extend({
+  className: 'giftForm',
+  model: null,
+  events:{
+    'submit #addGift': 'addGift',
+  },
+  initialize: function(id){
+    if(!this.model){
+      this.model = new GiftModel();
+    }
+    this.id = id;
+    // this.collection = collection;
+  },
+  addGift: function(e){
+    e.preventDefault();
+    console.log("adding gift");
+    var data = {
+      giftName:this.$el.find('input[name=createGift]').val(),
+      giftCost:this.$el.find('input[name=createGiftPrice]').val(),
+      id:this.id
+    };
+    this.model.set(data);
+    console.log(this.model);
+    var that = this;
+    this.model.save().then(function(){
+      that.collection.create(this.model);
+    });
+  },
+  template: _.template(tmpl.giftForm),
+  render: function () {
+    var markup = this.template(this.model.toJSON());
+    this.$el.html(markup);
+    return this;
+  },
+});
+
+},{"./giftModel":5,"./templates":20,"backbone":11,"jquery":12,"underscore":13}],5:[function(require,module,exports){
+var Backbone = require('backbone');
+
+  module.exports = Backbone.Model.extend({
+    urlRoot: "http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts2",
+    // idAttribute: "_id",
+    defaults: function () {
+      return {
+        giftName: "null",
+        giftCost: "null",
+        id: "null"
+      };
+    },
+    initialize: function () {},
+  });
+
+},{"backbone":11}],6:[function(require,module,exports){
+var Backbone = require('backbone');
+var $ = require('jquery');
+Backbone.$ = $;
+var _ = require('underscore');
+var tmpl = require('./templates');
+
+module.exports = Backbone.View.extend({
+    // model: "null",
+    initialize: function () {},
+    template: _.template(tmpl.gift),
+    render: function () {
+      var markup = this.template(this.model.toJSON());
+      this.$el.html(markup);
+      return this;
+    }
+  });
+
+},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ =  require('jquery');
 var _ = require('underscore');
@@ -32,7 +151,7 @@ Backbone.$ = $;
       }
   });
 
-},{"./templates":15,"backbone":6,"jquery":7,"underscore":8}],3:[function(require,module,exports){
+},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -54,7 +173,7 @@ module.exports = Backbone.View.extend({
    }
  });
 
-},{"./footerView":1,"./headerView":2,"./loginFormView":4,"backbone":6,"jquery":7,"underscore":8}],4:[function(require,module,exports){
+},{"./footerView":2,"./headerView":7,"./loginFormView":9,"backbone":11,"jquery":12,"underscore":13}],9:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -93,7 +212,7 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./templates":15,"./userModel":16,"backbone":6,"jquery":7,"underscore":8}],5:[function(require,module,exports){
+},{"./templates":20,"./userModel":21,"backbone":11,"jquery":12,"underscore":13}],10:[function(require,module,exports){
 var $ = require('jquery');
 var Backbone = require('backbone');
 var Router = require('./router');
@@ -105,7 +224,7 @@ $(function () {
 
 });
 
-},{"./router":14,"backbone":6,"jquery":7}],6:[function(require,module,exports){
+},{"./router":19,"backbone":11,"jquery":12}],11:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.2.3
 
@@ -2003,7 +2122,7 @@ $(function () {
 }));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":7,"underscore":8}],7:[function(require,module,exports){
+},{"jquery":12,"underscore":13}],12:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -11215,7 +11334,7 @@ return jQuery;
 
 }));
 
-},{}],8:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -12765,7 +12884,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],9:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 //Recipient Collection
 
 var Backbone = require('backbone');
@@ -12783,7 +12902,7 @@ module.exports = Backbone.Collection.extend({
     }
 });
 
-},{"./recipientModel":12,"backbone":6}],10:[function(require,module,exports){
+},{"./recipientModel":17,"backbone":11}],15:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -12813,7 +12932,7 @@ module.exports = Backbone.View.extend({
   },
 })
 
-},{"./recipientCollection":9,"./recipientModel":12,"./recipientModelView":13,"backbone":6,"jquery":7,"underscore":8}],11:[function(require,module,exports){
+},{"./recipientCollection":14,"./recipientModel":17,"./recipientModelView":18,"backbone":11,"jquery":12,"underscore":13}],16:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -12854,7 +12973,7 @@ module.exports = Backbone.View.extend({
   }
 });
 
-},{"./recipientCollectionView":10,"./recipientModel":12,"./templates":15,"backbone":6,"jquery":7,"underscore":8}],12:[function(require,module,exports){
+},{"./recipientCollectionView":15,"./recipientModel":17,"./templates":20,"backbone":11,"jquery":12,"underscore":13}],17:[function(require,module,exports){
 // Recipient Model
 
 var Backbone = require('backbone');
@@ -12874,7 +12993,7 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"backbone":6}],13:[function(require,module,exports){
+},{"backbone":11}],18:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -12888,6 +13007,7 @@ module.exports = Backbone.View.extend({
   events: {
     'click .glyphicon-pencil': 'editRecipientInfo',
     'click .glyphicon-trash': 'deleteRecipient',
+    'click .glyphicon-gift': 'addGifts',
     'keypress h3,span': 'updateRecipient',
   },
   render: function () {
@@ -12912,8 +13032,9 @@ module.exports = Backbone.View.extend({
       var recipient = this.model;
       var name = recipientEl.find("h3").text().trim();
       var budget =recipientEl.find("span").text().trim();
-      recipient.save({name: name, budget:budget});
-    }
+      recipient.set({name: name, budget:budget});
+
+    };
   },
   deleteRecipient: function (e){
     e.preventDefault();
@@ -12922,11 +13043,15 @@ module.exports = Backbone.View.extend({
     var recipient = this.model;
     recipient.destroy();
     recipientEl.remove();
+  },
+  addGifts: function (e) {
+    e.preventDefault();
+    window.location.hash = 'gifts/'+this.model.attributes.id;
   }
 
 });
 
-},{"./templates":15,"backbone":6,"jquery":7,"underscore":8}],14:[function(require,module,exports){
+},{"./templates":20,"backbone":11,"jquery":12,"underscore":13}],19:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 var _ = require('underscore');
@@ -12935,13 +13060,17 @@ var LayoutView = require('./layoutView');
 var RecipientCollection = require('./recipientCollection');
 var RecipientCollectionView = require('./recipientCollectionView');
 var RecipientFormView = require('./recipientFormView');
+var GiftCollectionView = require('./GiftCollectionView');
+var GiftCollection = require('./giftCollection');
+var GiftFormView = require('./giftFormView');
+
 
 module.exports = Backbone.Router.extend({
   routes: {
     '': 'loginPage',
     'register': 'registerPage',
     'recipients': 'recipientsPage',
-    'gifts': 'giftPage'
+    'gifts/:id': 'giftPage'
 
   },
   initialize: function (options) {
@@ -12950,9 +13079,7 @@ module.exports = Backbone.Router.extend({
   login: function () {
     console.log("you've made it to login!!");
   },
-  registerPage: function(){
 
-  },
   recipientsPage: function () {
     console.log("you've made it to the recipients page");
     var recipientCollection = new RecipientCollection();
@@ -12965,20 +13092,25 @@ module.exports = Backbone.Router.extend({
     });
 
   },
-  giftPage: function () {
+  giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-
+    var giftCollection = new GiftCollection();
+    var giftForm = new GiftFormView(recipientID);
+    $('.layoutView').html(giftForm.render().el);
+    giftCollection.fetch().then(function () {
+      console.log("fetched");
+      var giftsView = new GiftCollectionView(giftCollection, recipientID);
+      $('#layout').html(giftsView.addAll().el);
+    });
   }
 
 });
 
-},{"./layoutView":3,"./recipientCollection":9,"./recipientCollectionView":10,"./recipientFormView":11,"backbone":6,"jquery":7,"underscore":8}],15:[function(require,module,exports){
+},{"./GiftCollectionView":1,"./giftCollection":3,"./giftFormView":4,"./layoutView":8,"./recipientCollection":14,"./recipientCollectionView":15,"./recipientFormView":16,"backbone":11,"jquery":12,"underscore":13}],20:[function(require,module,exports){
 module.exports = {
   gift: [
-    "<img src='<%= cover %>'>",
     "<h3><%= giftName %></h3>",
     "<h3><%= giftCost %></h3>",
-    "<h4><%= giftId %></h4>",
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>"
@@ -13004,18 +13136,19 @@ module.exports = {
     "</form>",
   ].join(''),
   giftForm: [
-    "<form class='register'>",
+    "<form class='giftPost'>",
       "<h2 class='giftName'>Input Gift Name: </h2>",
-      "<input type='text' name='createUser' value='' placeholder='Enter the Gifts Name'>",
+      "<input type='text' name='createGift' value='' placeholder='Enter the Gifts Name'>",
       "<h2 class='giftPrice'>Input Gift Price: </h2>",
-      "<input type='text' name='createPass' value='' placeholder='Enter the Gifts Price'>",
-      "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
-    "</form>"
+      "<input type='text' name='createGiftPrice' value='' placeholder='Enter the Gifts Price'>",
+      "<button type='submit' name='addGift' id='addGift'>Add Gift</button>",
+    "</form>",
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-gift' aria-hidden='false'></span>",
     "<p>Budget: <span class = 'recBudget'><%= budget %></span></p>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
@@ -13030,7 +13163,7 @@ module.exports = {
   ].join(''),
 }
 
-},{}],16:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
@@ -13047,4 +13180,4 @@ module.exports = Backbone.Model.extend({
   }
 });
 
-},{"backbone":6}]},{},[5]);
+},{"backbone":11}]},{},[10]);

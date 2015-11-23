@@ -11,6 +11,7 @@ module.exports = Backbone.View.extend({
   events: {
     'click .glyphicon-pencil': 'editRecipientInfo',
     'click .glyphicon-trash': 'deleteRecipient',
+    'click .glyphicon-gift': 'addGifts',
     'keypress h3,span': 'updateRecipient',
   },
   render: function () {
@@ -35,8 +36,9 @@ module.exports = Backbone.View.extend({
       var recipient = this.model;
       var name = recipientEl.find("h3").text().trim();
       var budget =recipientEl.find("span").text().trim();
-      recipient.save({name: name, budget:budget});
-    }
+      recipient.set({name: name, budget:budget});
+
+    };
   },
   deleteRecipient: function (e){
     e.preventDefault();
@@ -45,6 +47,10 @@ module.exports = Backbone.View.extend({
     var recipient = this.model;
     recipient.destroy();
     recipientEl.remove();
+  },
+  addGifts: function (e) {
+    e.preventDefault();
+    window.location.hash = 'gifts/'+this.model.attributes.id;
   }
 
 });
