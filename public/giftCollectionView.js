@@ -6,7 +6,7 @@ var GiftModelView = require('./giftModelView');
 var GiftCollection = require('./giftCollection');
 
 module.exports = Backbone.View.extend({
-  el: '.giftsList',
+  el: '.layoutView',
   collection: null,
   initialize: function (collection, id) {
     this.collection = collection;
@@ -22,7 +22,6 @@ module.exports = Backbone.View.extend({
   },
   addAll: function () {
     console.log('fire');
-    $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
     return this;
   }

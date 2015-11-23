@@ -8,7 +8,7 @@ module.exports = Backbone.View.extend({
   className: 'giftForm',
   model: null,
   events:{
-    'submit #addGift': 'addGift',
+    'click #addGift': 'addGift',
   },
   initialize: function(id){
     if(!this.model){
@@ -20,17 +20,16 @@ module.exports = Backbone.View.extend({
   addGift: function(e){
     e.preventDefault();
     console.log("adding gift");
-    var data = {
-      giftName:this.$el.find('input[name=createGift]').val(),
-      giftCost:this.$el.find('input[name=createGiftPrice]').val(),
-      id:this.id
+    var newGift = {
+      name:this.$el.find('input[name=createGift]').val(),
+      cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-    this.model.set(data);
+    // this.model.set(data);
     console.log(this.model);
-    var that = this;
-    this.model.save().then(function(){
-      that.collection.create(this.model);
-    });
+    var newModel = new GiftModel(newGift);
+    newModel.url = "gift/?id="+this.id;
+    newModel.save(newGift);
+    this.$el.find('form').find('input').val("");
   },
   template: _.template(tmpl.giftForm),
   render: function () {

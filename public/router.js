@@ -34,19 +34,17 @@ module.exports = Backbone.Router.extend({
     recipientCollection.fetch().then(function () {
       console.log("fetched");
       var recipientsView = new RecipientCollectionView(recipientCollection);
-      $('#layout').html(recipientsView.addAll().el);
     });
 
   },
   giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-    var giftCollection = new GiftCollection();
+    var giftCollection = new GiftCollection(recipientID);
     var giftForm = new GiftFormView(recipientID);
     $('.layoutView').html(giftForm.render().el);
     giftCollection.fetch().then(function () {
       console.log("fetched");
       var giftsView = new GiftCollectionView(giftCollection, recipientID);
-      $('#layout').html(giftsView.addAll().el);
     });
   }
 

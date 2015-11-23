@@ -1,7 +1,9 @@
 module.exports = {
   gift: [
-    "<h3><%= giftName %></h3>",
-    "<h3><%= giftCost %></h3>",
+    "<h3 id = 'giftName'><%= name %></h3>",
+    "<h3 id = 'giftCost'><%= cost %></h3>",
+    "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>"

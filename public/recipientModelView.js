@@ -36,7 +36,7 @@ module.exports = Backbone.View.extend({
       var recipient = this.model;
       var name = recipientEl.find("h3").text().trim();
       var budget =recipientEl.find("span").text().trim();
-      recipient.set({name: name, budget:budget});
+      recipient.save({id: recipient.attributes.id, name: name, budget:budget});
 
     };
   },

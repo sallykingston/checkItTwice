@@ -7,7 +7,7 @@ var GiftModelView = require('./giftModelView');
 var GiftCollection = require('./giftCollection');
 
 module.exports = Backbone.View.extend({
-  el: '.giftsList',
+  el: '.layoutView',
   collection: null,
   initialize: function (collection, id) {
     this.collection = collection;
@@ -23,7 +23,6 @@ module.exports = Backbone.View.extend({
   },
   addAll: function () {
     console.log('fire');
-    $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
     return this;
   }
@@ -51,9 +50,13 @@ var tmpl = require('./templates');
 var Backbone = require('backbone');
 var GiftModel = require('./giftModel');
 module.exports = Backbone.Collection.extend({
-  url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts2',
+  url: 'gifts',
   model: GiftModel,
-  initialize: function(){
+  initialize: function(id){
+    this.id = id;
+    this.url= function(){ "gifts/"
+                return "gifts/?id=" +id;
+                  };
   }
 });
 
@@ -68,7 +71,7 @@ module.exports = Backbone.View.extend({
   className: 'giftForm',
   model: null,
   events:{
-    'submit #addGift': 'addGift',
+    'click #addGift': 'addGift',
   },
   initialize: function(id){
     if(!this.model){
@@ -80,17 +83,16 @@ module.exports = Backbone.View.extend({
   addGift: function(e){
     e.preventDefault();
     console.log("adding gift");
-    var data = {
-      giftName:this.$el.find('input[name=createGift]').val(),
-      giftCost:this.$el.find('input[name=createGiftPrice]').val(),
-      id:this.id
+    var newGift = {
+      name:this.$el.find('input[name=createGift]').val(),
+      cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-    this.model.set(data);
+    // this.model.set(data);
     console.log(this.model);
-    var that = this;
-    this.model.save().then(function(){
-      that.collection.create(this.model);
-    });
+    var newModel = new GiftModel(newGift);
+    newModel.url = "gift/?id="+this.id;
+    newModel.save(newGift);
+    this.$el.find('form').find('input').val("");
   },
   template: _.template(tmpl.giftForm),
   render: function () {
@@ -104,13 +106,13 @@ module.exports = Backbone.View.extend({
 var Backbone = require('backbone');
 
   module.exports = Backbone.Model.extend({
-    urlRoot: "http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts2",
-    // idAttribute: "_id",
+    url: function(){ "gift/"
+        return "gift/?id=" +this.get("id");
+      },
     defaults: function () {
       return {
         giftName: "null",
-        giftCost: "null",
-        id: "null"
+        giftCost: "null"
       };
     },
     initialize: function () {},
@@ -125,12 +127,47 @@ var tmpl = require('./templates');
 
 module.exports = Backbone.View.extend({
     // model: "null",
+    tagName: 'article',
+    className: 'gift',
+    events: {
+      'click .glyphicon-pencil': 'editGiftInfo',
+      'click .glyphicon-trash': 'deleteGift',
+      'keypress h3,span': 'updateGift',
+    },
     initialize: function () {},
     template: _.template(tmpl.gift),
     render: function () {
       var markup = this.template(this.model.toJSON());
       this.$el.html(markup);
       return this;
+    },
+    editGiftInfo: function (e) {
+      e.preventDefault();
+      console.log("editing");
+      var giftText = this.$el.find("h3");
+      giftText.attr("contenteditable",true);
+      giftText.toggleClass("editable");
+    },
+    updateGift: function (e) {
+      if(e.charCode===13){
+        var giftEl = this.$el;
+        var giftText = giftEl.find("h3");
+        giftText.attr("contenteditable",false);
+        giftText.toggleClass("editable");
+        var gift = this.model;
+        var name = giftEl.find("#giftName").text().trim();
+        var cost =giftEl.find("#giftCost").text().trim();
+        gift.save({id: gift.attributes.id, name: name, cost:cost});
+
+      };
+    },
+    deleteGift: function (e){
+      e.preventDefault();
+      console.log("deleting");
+      var giftEl = this.$el;
+      var gift = this.model;
+      gift.destroy();
+      giftEl.remove();
     }
   });
 
@@ -12892,7 +12929,7 @@ var RecipientModel = require('./recipientModel');
 
 module.exports = Backbone.Collection.extend({
     // url: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
-    url: 'get-recipients',
+    url: 'recipients',
     model: RecipientModel,
     initialize: function () {
 
@@ -12979,9 +13016,11 @@ module.exports = Backbone.View.extend({
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-  // urlRoot: 'http://tiny-tiny.herokuapp.com/collections/checkItTwiceRecipients',
-  urlRoot: 'add-recipient',
-  idAttribute: '_id',
+  //thank you stack overflow for this
+  url: function(){ "recipient/"
+      return "recipient/?id=" +this.get("id");
+    },
+  
   defaults: {
     name: "Buddy the Elf",
     budget: 0,
@@ -13032,7 +13071,7 @@ module.exports = Backbone.View.extend({
       var recipient = this.model;
       var name = recipientEl.find("h3").text().trim();
       var budget =recipientEl.find("span").text().trim();
-      recipient.set({name: name, budget:budget});
+      recipient.save({id: recipient.attributes.id, name: name, budget:budget});
 
     };
   },
@@ -13088,19 +13127,17 @@ module.exports = Backbone.Router.extend({
     recipientCollection.fetch().then(function () {
       console.log("fetched");
       var recipientsView = new RecipientCollectionView(recipientCollection);
-      $('#layout').html(recipientsView.addAll().el);
     });
 
   },
   giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-    var giftCollection = new GiftCollection();
+    var giftCollection = new GiftCollection(recipientID);
     var giftForm = new GiftFormView(recipientID);
     $('.layoutView').html(giftForm.render().el);
     giftCollection.fetch().then(function () {
       console.log("fetched");
       var giftsView = new GiftCollectionView(giftCollection, recipientID);
-      $('#layout').html(giftsView.addAll().el);
     });
   }
 
@@ -13109,8 +13146,10 @@ module.exports = Backbone.Router.extend({
 },{"./GiftCollectionView":1,"./giftCollection":3,"./giftFormView":4,"./layoutView":8,"./recipientCollection":14,"./recipientCollectionView":15,"./recipientFormView":16,"backbone":11,"jquery":12,"underscore":13}],20:[function(require,module,exports){
 module.exports = {
   gift: [
-    "<h3><%= giftName %></h3>",
-    "<h3><%= giftCost %></h3>",
+    "<h3 id = 'giftName'><%= name %></h3>",
+    "<h3 id = 'giftCost'><%= cost %></h3>",
+    "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>"
