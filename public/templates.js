@@ -7,7 +7,7 @@ module.exports = {
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>",
-      "<button type='button' name='button' id='recipients'>Return To Recipients</button>"
+
   ].join(''),
   footer: [
       "<h1>Don't be Nawwwty</h1>"
@@ -37,6 +37,7 @@ module.exports = {
       "<input type='text' name='createGiftPrice' value='' placeholder='Enter the Gifts Price'>",
       "<button type='submit' name='addGift' id='addGift'>Add Gift</button>",
     "</form>",
+    "<button type='button' name='button' id='recipients'>Return To Recipients</button>"
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",

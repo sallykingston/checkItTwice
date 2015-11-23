@@ -10,7 +10,8 @@ module.exports = Backbone.View.extend({
   model: null,
   events:{
     'click #addGift': 'addGift',
-    'click #test': 'totalCost'
+    'click #test': 'totalCost',
+    'click #recipients': 'retReci'
   },
   initialize: function(id){
     if(!this.model){
@@ -35,6 +36,10 @@ module.exports = Backbone.View.extend({
     newModel.url = "gift/?id="+this.id;
     newModel.save(newGift);
     this.$el.find('form').find('input').val("");
+  },
+  retReci: function(){
+    window.location.hash = 'recipients';
+    location.reload();
   },
   template: _.template(tmpl.giftForm),
   render: function () {

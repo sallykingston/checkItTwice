@@ -129,7 +129,8 @@ module.exports = Backbone.View.extend({
   model: null,
   events:{
     'click #addGift': 'addGift',
-    'click #test': 'totalCost'
+    'click #test': 'totalCost',
+    'click #recipients': 'retReci'
   },
   initialize: function(id){
     if(!this.model){
@@ -154,6 +155,10 @@ module.exports = Backbone.View.extend({
     newModel.url = "gift/?id="+this.id;
     newModel.save(newGift);
     this.$el.find('form').find('input').val("");
+  },
+  retReci: function(){
+    window.location.hash = 'recipients';
+    location.reload();
   },
   template: _.template(tmpl.giftForm),
   render: function () {
@@ -242,13 +247,6 @@ Backbone.$ = $;
   module.exports = Backbone.View.extend({
       initialize: function () {},
       template: _.template(tmpl.header),
-      events:{
-        'click #recipients': 'retReci'
-      },
-      retReci: function(){
-        window.location.hash = 'recipients';
-        location.reload();
-      },
       render: function () {
         var markup = this.template({});
         this.$el.html(markup);
@@ -13226,7 +13224,7 @@ module.exports = {
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>",
-      "<button type='button' name='button' id='recipients'>Return To Recipients</button>"
+
   ].join(''),
   footer: [
       "<h1>Don't be Nawwwty</h1>"
@@ -13256,6 +13254,7 @@ module.exports = {
       "<input type='text' name='createGiftPrice' value='' placeholder='Enter the Gifts Price'>",
       "<button type='submit' name='addGift' id='addGift'>Add Gift</button>",
     "</form>",
+    "<button type='button' name='button' id='recipients'>Return To Recipients</button>"
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",

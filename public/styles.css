@@ -20,7 +20,7 @@ h2, h3, h4 {
   font-family: 'Mountains of Christmas', cursive;
   color: white; }
 
-.addUser {
+.addUser, .addRecipient {
   border-radius: 3px;
   border: 3px solid #2D882D;
   padding: 10px;
@@ -97,10 +97,10 @@ form {
 
 .layoutView {
   width: 50%;
-  margin: 10px auto; }
+  margin: 10px auto;
+  min-height: 585px; }
 
-header,
-footer {
+header, footer {
   background-color: #CB0000;
   text-align: center;
   border-radius: 25px;
