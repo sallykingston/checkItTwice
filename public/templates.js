@@ -34,7 +34,6 @@ module.exports = {
       "<input type='text' name='createGiftPrice' value='' placeholder='Enter the Gifts Price'>",
       "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
     "</form>",
-    "<button type='button' name='name' class='test'>click</button>"
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",
@@ -52,4 +51,11 @@ module.exports = {
       "<button type='submit' id='addRecipientBtn' class='addRecipient'>Add Recipient</button>",
     "</form>"
   ].join(''),
+  budgetForm: [
+    "<form class='addBudget'>",
+      "<h2>Input Budget</h2>",
+      "<input type='text' name='budget' value='' placeholder='Enter Your Total Budget'>",
+      "<button type='submit'>Submit</button>",
+    "</form>"
+  ].join('')
 }

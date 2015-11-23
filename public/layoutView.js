@@ -17,25 +17,25 @@ module.exports = Backbone.View.extend({
   el:'.layoutCont',
    initialize: function(){
      var that = this;
-     var headerHTML = new HeaderView();
-     var footerHTML = new FooterView();
-     var loginFormHTML = new LoginFormView();
-     var reciFormHTML = new RecipientFormView();
+    //  var headerHTML = new HeaderView();
+    //  var footerHTML = new FooterView();
+    //  var loginFormHTML = new LoginFormView();
+    //  var reciFormHTML = new RecipientFormView();
 //     this.$el.find('.loginCont').html(loginFormView.render().el);
 //     var recipientCollection = new RecipientCollection();
 //     recipientCollection.fetch().then(function(){
 //       var recipientCollectionView = new RecipientCollectionView({collection: recipientCollection});
        var giftCollection = new GiftCollection();
        giftCollection.fetch().then(function(){
-         console.log(giftCollection);
          var giftCollectionView = new GiftCollectionView({collection: giftCollection});
          var giftFormHTML = new GiftFormView({collection: giftCollection});
          that.$el.find('.gifts').html(giftFormHTML.render().el);
+         giftFormHTML.totalCost();
        });
-      that.$el.find('header').html(headerHTML.render().el);
-      that.$el.find('.recipients').html(reciFormHTML.render().el);
-      that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
-      that.$el.find('footer').html(footerHTML.render().el);
+      // that.$el.find('header').html(headerHTML.render().el);
+      // that.$el.find('.recipients').html(reciFormHTML.render().el);
+      // that.$el.find('.loginCont').html(loginFormHTML.renderLogin().el);
+      // that.$el.find('footer').html(footerHTML.render().el);
 //     });
    },
  });

@@ -12,13 +12,11 @@ module.exports = Backbone.View.extend({
     this.addAll();
     this.listenTo(this.collection, 'add', this.addAll);
   },
-  addOne: function (model) {
-    console.log('fire');
+  addOne: function (model){
     var giftModelView = new GiftModelView({model: model});
-    this.$el.append(giftModelView.render().el);
+    this.$el.prepend(giftModelView.render().el);
   },
   addAll: function () {
-    console.log('fire');
     $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
   }

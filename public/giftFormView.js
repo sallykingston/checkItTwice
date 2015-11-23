@@ -18,14 +18,16 @@ module.exports = Backbone.View.extend({
   addGift: function(e){
     e.preventDefault();
     var data = {
-      giftName:this.$el.find('input[name=createGift]').val(),
-      giftCost:this.$el.find('input[name=createGiftPrice]').val(),
+      giftName: this.$el.find('input[name=createGift]').val(),
+      giftCost: this.$el.find('input[name=createGiftPrice]').val(),
     };
+    if(typeof data.giftCost !== 'number'){
+      data.giftCost = parseInt(data.giftCost);
+    }
     this.model.set(data);
-    console.log(this.model);
     var that = this;
     this.model.save().then(function(){
-      that.collection.create(this.model);
+      that.collection.add(that.model);
     });
   },
   template: _.template(tmpl.giftForm),
@@ -34,4 +36,11 @@ module.exports = Backbone.View.extend({
     this.$el.html(markup);
     return this;
   },
+  totalCost: function(){
+    var cost = 0;
+    _.each(this.collection.models, function(el){
+      cost += el.attributes.giftCost;
+    });
+    console.log(cost);
+  }
 });
