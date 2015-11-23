@@ -155,8 +155,8 @@ module.exports = Backbone.View.extend({
         giftText.attr("contenteditable",false);
         giftText.toggleClass("editable");
         var gift = this.model;
-        var name = giftEl.find("#giftName").text().trim();
-        var cost =giftEl.find("#giftCost").text().trim();
+        var name = giftEl.find(".giftName").text().trim();
+        var cost =giftEl.find(".giftCost").text().trim();
         gift.save({id: gift.attributes.id, name: name, cost:cost});
 
       };
@@ -13047,7 +13047,7 @@ module.exports = Backbone.View.extend({
     'click .glyphicon-pencil': 'editRecipientInfo',
     'click .glyphicon-trash': 'deleteRecipient',
     'click .glyphicon-gift': 'addGifts',
-    'keypress h3,span': 'updateRecipient',
+    'keypress .recName, .recBudget': 'updateRecipient',
   },
   render: function () {
     var markup = this.template(this.model.toJSON());
@@ -13058,19 +13058,19 @@ module.exports = Backbone.View.extend({
   editRecipientInfo: function (e) {
     e.preventDefault();
     console.log("editing");
-    var recipientText = this.$el.find("span,h3");
+    var recipientText = this.$el.find(".recName, .recBudget");
     recipientText.attr("contenteditable",true);
     recipientText.toggleClass("editable");
   },
   updateRecipient: function (e) {
     if(e.charCode===13){
       var recipientEl = this.$el;
-      var recipientText = recipientEl.find("p,h3");
+      var recipientText = recipientEl.find(".recName, .recBudget");
       recipientText.attr("contenteditable",false);
       recipientText.toggleClass("editable");
       var recipient = this.model;
-      var name = recipientEl.find("h3").text().trim();
-      var budget =recipientEl.find("span").text().trim();
+      var name = recipientEl.find(".recName").text().trim();
+      var budget =recipientEl.find(".recBudget").text().trim();
       recipient.save({id: recipient.attributes.id, name: name, budget:budget});
 
     };
@@ -13146,8 +13146,8 @@ module.exports = Backbone.Router.extend({
 },{"./GiftCollectionView":1,"./giftCollection":3,"./giftFormView":4,"./layoutView":8,"./recipientCollection":14,"./recipientCollectionView":15,"./recipientFormView":16,"backbone":11,"jquery":12,"underscore":13}],20:[function(require,module,exports){
 module.exports = {
   gift: [
-    "<h3 id = 'giftName'><%= name %></h3>",
-    "<h3 id = 'giftCost'><%= cost %></h3>",
+    "<h3 class = 'giftName'><%= name %></h3>",
+    "<h3 class = 'giftCost'><%= cost %></h3>",
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
@@ -13188,9 +13188,8 @@ module.exports = {
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-gift' aria-hidden='false'></span>",
-    "<p>Budget: <span class = 'recBudget'><%= budget %></span></p>",
-    "<ul class = 'gifts'></ul>"
-  ].join(""),
+    "<p>Budget: $ <span class = 'recBudget'><%= budget %></span></p>"
+    ].join(""),
   recipientForm: [
     "<form class='addRecipient' >",
       "<label for='recipientName'>Recipient Name</label>",

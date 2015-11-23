@@ -1,7 +1,7 @@
 module.exports = {
   gift: [
-    "<h3 id = 'giftName'><%= name %></h3>",
-    "<h3 id = 'giftCost'><%= cost %></h3>",
+    "<h3 class = 'giftName'><%= name %></h3>",
+    "<h3 class = 'giftCost'><%= cost %></h3>",
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
@@ -42,9 +42,8 @@ module.exports = {
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-gift' aria-hidden='false'></span>",
-    "<p>Budget: <span class = 'recBudget'><%= budget %></span></p>",
-    "<ul class = 'gifts'></ul>"
-  ].join(""),
+    "<p>Budget: $ <span class = 'recBudget'><%= budget %></span></p>"
+    ].join(""),
   recipientForm: [
     "<form class='addRecipient' >",
       "<label for='recipientName'>Recipient Name</label>",
