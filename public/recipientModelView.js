@@ -12,7 +12,7 @@ module.exports = Backbone.View.extend({
     'click .glyphicon-pencil': 'editRecipientInfo',
     'click .glyphicon-trash': 'deleteRecipient',
     'click .glyphicon-gift': 'addGifts',
-    'keypress h3,span': 'updateRecipient',
+    'keypress .recName, .recBudget': 'updateRecipient',
   },
   render: function () {
     var markup = this.template(this.model.toJSON());
@@ -23,19 +23,19 @@ module.exports = Backbone.View.extend({
   editRecipientInfo: function (e) {
     e.preventDefault();
     console.log("editing");
-    var recipientText = this.$el.find("span,h3");
+    var recipientText = this.$el.find(".recName, .recBudget");
     recipientText.attr("contenteditable",true);
     recipientText.toggleClass("editable");
   },
   updateRecipient: function (e) {
     if(e.charCode===13){
       var recipientEl = this.$el;
-      var recipientText = recipientEl.find("p,h3");
+      var recipientText = recipientEl.find(".recName, .recBudget");
       recipientText.attr("contenteditable",false);
       recipientText.toggleClass("editable");
       var recipient = this.model;
-      var name = recipientEl.find("h3").text().trim();
-      var budget =recipientEl.find("span").text().trim();
+      var name = recipientEl.find(".recName").text().trim();
+      var budget =recipientEl.find(".recBudget").text().trim();
       recipient.save({id: recipient.attributes.id, name: name, budget:budget});
 
     };
