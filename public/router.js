@@ -41,12 +41,16 @@ module.exports = Backbone.Router.extend({
   },
   giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-    var giftCollection = new GiftCollection(recipientID);
-    var giftForm = new GiftFormView(recipientID);
-    $('.layoutView').html(giftForm.render().el);
-    giftCollection.fetch().then(function () {
-      console.log("fetched");
-      var giftsView = new GiftCollectionView(giftCollection, recipientID);
+    var recipientCollection = new RecipientCollection();
+    recipientCollection.fetch().then(function () {
+      var recipient = recipientCollection.get(recipientID);
+      var giftCollection = new GiftCollection(recipientID);
+      var giftForm = new GiftFormView(recipientID);
+      $('.layoutView').html(giftForm.render().el);
+      giftCollection.fetch().then(function () {
+        console.log("fetched");
+        var giftsView = new GiftCollectionView(giftCollection, recipientID, recipient);
+      });
     });
   }
 

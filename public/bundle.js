@@ -5,28 +5,31 @@ var $ = require('jquery');
 Backbone.$ = $;
 var GiftModelView = require('./giftModelView');
 var GiftCollection = require('./giftCollection');
+var RecipientModel = require('./recipientModel');
+var tmpl = require('./templates');
 
 module.exports = Backbone.View.extend({
   el: '.layoutView',
   collection: null,
-  initialize: function (collection, id) {
+  initialize: function (collection, id, recipient) {
     this.collection = collection;
     this.collection.fetch(id);
+    this.addRecHeader(recipient);
     this.addAll();
+    this.totalCost(recipient);
     this.recipientID = id;
     this.listenTo(this.collection, 'add', this.addAll);
   },
   addOne: function (model){
     var giftModelView = new GiftModelView({model: model});
-    this.$el.prepend(giftModelView.render().el);
-    this.totalCost();
+    this.$el.append(giftModelView.render().el);
+
   },
   addAll: function () {
-    $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
-  totalCost: function(){
+  totalCost: function(recipient){
     console.log('fired');
     var cost = 0;
     _.each(this.collection.models, function(el){
@@ -34,10 +37,19 @@ module.exports = Backbone.View.extend({
       cost += el.attributes.cost;
     });
     console.log(cost);
+    $('.recCosts').html(cost);
+    if(cost>recipient.attributes.budget){
+      this.$el.find('p').addClass("overbudget");
+    }
+  },
+  addRecHeader: function(recipient){
+    template =  _.template(tmpl.recipientHeader);
+    var markup = template(recipient.toJSON());
+    this.$el.prepend(markup);
   }
 });
 
-},{"./giftCollection":4,"./giftModelView":7,"backbone":12,"jquery":13,"underscore":14}],2:[function(require,module,exports){
+},{"./giftCollection":4,"./giftModelView":7,"./recipientModel":18,"./templates":21,"backbone":12,"jquery":13,"underscore":14}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -111,6 +123,7 @@ Backbone.$ = $;
 var _ = require('underscore');
 var tmpl = require('./templates');
 var GiftModel = require('./giftModel');
+
 module.exports = Backbone.View.extend({
   className: 'giftForm',
   model: null,
@@ -127,15 +140,7 @@ module.exports = Backbone.View.extend({
   },
   addGift: function(e){
     e.preventDefault();
-//     var data = {
-//       giftName: this.$el.find('input[name=createGift]').val(),
-//       giftCost: this.$el.find('input[name=createGiftPrice]').val(),
-//     };
-//     this.model.set(data);
-//     var that = this;
-//     this.model.save().then(function(){
-//       that.collection.add(that.model);
-//     });
+
     console.log("adding gift");
     var newGift = {
       name:this.$el.find('input[name=createGift]').val(),
@@ -211,8 +216,8 @@ module.exports = Backbone.View.extend({
         giftText.attr("contenteditable",false);
         giftText.toggleClass("editable");
         var gift = this.model;
-        var name = giftEl.find("#giftName").text().trim();
-        var cost =giftEl.find("#giftCost").text().trim();
+        var name = giftEl.find(".giftName").text().trim();
+        var cost =giftEl.find(".giftCost").text().trim();
         gift.save({id: gift.attributes.id, name: name, cost:cost});
 
       };
@@ -13109,7 +13114,7 @@ module.exports = Backbone.View.extend({
     'click .glyphicon-pencil': 'editRecipientInfo',
     'click .glyphicon-trash': 'deleteRecipient',
     'click .glyphicon-gift': 'addGifts',
-    'keypress h3,span': 'updateRecipient',
+    'keypress .recName, .recBudget': 'updateRecipient',
   },
   render: function () {
     var markup = this.template(this.model.toJSON());
@@ -13120,19 +13125,19 @@ module.exports = Backbone.View.extend({
   editRecipientInfo: function (e) {
     e.preventDefault();
     console.log("editing");
-    var recipientText = this.$el.find("span,h3");
+    var recipientText = this.$el.find(".recName, .recBudget");
     recipientText.attr("contenteditable",true);
     recipientText.toggleClass("editable");
   },
   updateRecipient: function (e) {
     if(e.charCode===13){
       var recipientEl = this.$el;
-      var recipientText = recipientEl.find("p,h3");
+      var recipientText = recipientEl.find(".recName, .recBudget");
       recipientText.attr("contenteditable",false);
       recipientText.toggleClass("editable");
       var recipient = this.model;
-      var name = recipientEl.find("h3").text().trim();
-      var budget =recipientEl.find("span").text().trim();
+      var name = recipientEl.find(".recName").text().trim();
+      var budget =recipientEl.find(".recBudget").text().trim();
       recipient.save({id: recipient.attributes.id, name: name, budget:budget});
 
     };
@@ -13196,12 +13201,16 @@ module.exports = Backbone.Router.extend({
   },
   giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-    var giftCollection = new GiftCollection(recipientID);
-    var giftForm = new GiftFormView(recipientID);
-    $('.layoutView').html(giftForm.render().el);
-    giftCollection.fetch().then(function () {
-      console.log("fetched");
-      var giftsView = new GiftCollectionView(giftCollection, recipientID);
+    var recipientCollection = new RecipientCollection();
+    recipientCollection.fetch().then(function () {
+      var recipient = recipientCollection.get(recipientID);
+      var giftCollection = new GiftCollection(recipientID);
+      var giftForm = new GiftFormView(recipientID);
+      $('.layoutView').html(giftForm.render().el);
+      giftCollection.fetch().then(function () {
+        console.log("fetched");
+        var giftsView = new GiftCollectionView(giftCollection, recipientID, recipient);
+      });
     });
   }
 
@@ -13210,8 +13219,8 @@ module.exports = Backbone.Router.extend({
 },{"./GiftCollectionView":1,"./budgetFormView":2,"./giftCollection":4,"./giftFormView":5,"./layoutView":9,"./recipientCollection":15,"./recipientCollectionView":16,"./recipientFormView":17,"backbone":12,"jquery":13,"underscore":14}],21:[function(require,module,exports){
 module.exports = {
   gift: [
-    "<h3 id = 'giftName'><%= name %></h3>",
-    "<h3 id = 'giftCost'><%= cost %></h3>",
+    "<h3 class = 'giftName'><%= name %></h3>",
+    "<h3 class = 'giftCost'><%= cost %></h3>",
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
@@ -13253,9 +13262,8 @@ module.exports = {
     "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
     "<span class='glyphicon glyphicon-gift' aria-hidden='false'></span>",
-    "<p>Budget: <span class = 'recBudget'><%= budget %></span></p>",
-    "<ul class = 'gifts'></ul>"
-  ].join(""),
+    "<p>Budget: $ <span class = 'recBudget'><%= budget %></span></p>"
+    ].join(""),
   recipientForm: [
     "<form class='addRecipient' >",
       "<label for='recipientName'>Recipient Name</label>",
@@ -13271,7 +13279,15 @@ module.exports = {
       "<input type='text' name='budget' value='' placeholder='Enter Your Total Budget'>",
       "<button type='submit'>Submit</button>",
     "</form>"
-  ].join('')
+  ].join(''),
+  recipientHeader:[
+    "<div class='recHeader'>",
+    "<h3 class='recName'><%= name %></h3>",
+    "<p>Budget: $ <span class = 'recBudget'><%= budget %></span></p>",
+    "<p>Costs: $ <span class = 'recCosts'></span></p>",
+    "</div>"
+    ].join(""),
+
 }
 
 },{}],22:[function(require,module,exports){

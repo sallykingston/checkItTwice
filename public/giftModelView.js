@@ -34,8 +34,8 @@ module.exports = Backbone.View.extend({
         giftText.attr("contenteditable",false);
         giftText.toggleClass("editable");
         var gift = this.model;
-        var name = giftEl.find("#giftName").text().trim();
-        var cost =giftEl.find("#giftCost").text().trim();
+        var name = giftEl.find(".giftName").text().trim();
+        var cost =giftEl.find(".giftCost").text().trim();
         gift.save({id: gift.attributes.id, name: name, cost:cost});
 
       };
