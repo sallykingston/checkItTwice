@@ -6,29 +6,45 @@ var tmpl = require('./templates');
 var GiftModel = require('./giftModel');
 module.exports = Backbone.View.extend({
   className: 'giftForm',
-  model:null,
+  model: null,
   events:{
-    'submit .giftPost': 'addGift',
+    'click #addGift': 'addGift',
+    'click #test': 'totalCost'
   },
-  initialize: function(){
+  initialize: function(id){
     if(!this.model){
       this.model = new GiftModel();
     }
+    this.id = id;
+    // this.collection = collection;
   },
   addGift: function(e){
     e.preventDefault();
-    var data = {
-      giftName: this.$el.find('input[name=createGift]').val(),
-      giftCost: this.$el.find('input[name=createGiftPrice]').val(),
+//     var data = {
+//       giftName: this.$el.find('input[name=createGift]').val(),
+//       giftCost: this.$el.find('input[name=createGiftPrice]').val(),
+//     };
+//     this.model.set(data);
+//     var that = this;
+//     this.model.save().then(function(){
+//       that.collection.add(that.model);
+//     });
+    console.log("adding gift");
+    var newGift = {
+      name:this.$el.find('input[name=createGift]').val(),
+      cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-    if(typeof data.giftCost !== 'number'){
-      data.giftCost = parseInt(data.giftCost);
+
+    if(typeof newGift.cost !== 'number'){
+      console.log('yo');
+     newGift.cost = parseInt(newGift.cost);
     }
-    this.model.set(data);
-    var that = this;
-    this.model.save().then(function(){
-      that.collection.add(that.model);
-    });
+    console.log(typeof newGift.cost);
+    console.log(this.model);
+    var newModel = new GiftModel(newGift);
+    newModel.url = "gift/?id="+this.id;
+    newModel.save(newGift);
+    this.$el.find('form').find('input').val("");
   },
   template: _.template(tmpl.giftForm),
   render: function () {
@@ -36,11 +52,4 @@ module.exports = Backbone.View.extend({
     this.$el.html(markup);
     return this;
   },
-  totalCost: function(){
-    var cost = 0;
-    _.each(this.collection.models, function(el){
-      cost += el.attributes.giftCost;
-    });
-    console.log(cost);
-  }
 });

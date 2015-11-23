@@ -2,3 +2,4 @@ node_modules
 *.db
 .idea/workspace.xml
 .DS_Storepublic/node_modules
+.DS_Store

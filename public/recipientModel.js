@@ -3,8 +3,11 @@
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-  urlRoot: 'add-recipient',
-  idAttribute: '_id',
+  //thank you stack overflow for this
+  url: function(){ "recipient/"
+      return "recipient/?id=" +this.get("id");
+    },
+  
   defaults: {
     name: "Buddy the Elf",
     budget: 0,

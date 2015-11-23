@@ -9,6 +9,5 @@ import java.util.List;
  * Created by alhanger on 11/19/15.
  */
 public interface GiftRepository extends CrudRepository <Gift, Integer> {
-    Gift findOneByRecipientId(int id, int recipientId);
     List<Gift> findAllByRecipientId(int id);
 }

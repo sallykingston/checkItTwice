@@ -6,13 +6,17 @@ var LayoutView = require('./layoutView');
 var RecipientCollection = require('./recipientCollection');
 var RecipientCollectionView = require('./recipientCollectionView');
 var RecipientFormView = require('./recipientFormView');
+var GiftCollectionView = require('./GiftCollectionView');
+var GiftCollection = require('./giftCollection');
+var GiftFormView = require('./giftFormView');
+
 
 module.exports = Backbone.Router.extend({
   routes: {
     '': 'loginPage',
     'register': 'registerPage',
     'recipients': 'recipientsPage',
-    'gifts': 'giftPage'
+    'gifts/:id': 'giftPage'
 
   },
   initialize: function (options) {
@@ -21,9 +25,7 @@ module.exports = Backbone.Router.extend({
   login: function () {
     console.log("you've made it to login!!");
   },
-  registerPage: function(){
 
-  },
   recipientsPage: function () {
     console.log("you've made it to the recipients page");
     var recipientCollection = new RecipientCollection();
@@ -32,13 +34,18 @@ module.exports = Backbone.Router.extend({
     recipientCollection.fetch().then(function () {
       console.log("fetched");
       var recipientsView = new RecipientCollectionView(recipientCollection);
-      $('#layout').html(recipientsView.addAll().el);
     });
 
   },
-  giftPage: function () {
+  giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-
+    var giftCollection = new GiftCollection(recipientID);
+    var giftForm = new GiftFormView(recipientID);
+    $('.layoutView').html(giftForm.render().el);
+    giftCollection.fetch().then(function () {
+      console.log("fetched");
+      var giftsView = new GiftCollectionView(giftCollection, recipientID);
+    });
   }
 
 });

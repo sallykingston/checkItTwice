@@ -1,14 +1,9 @@
 package com.theironyard.controllers;
 
-import com.theironyard.services.GiftParams;
-import com.theironyard.services.LoginParams;
-import com.theironyard.services.RecipientParams;
+import com.theironyard.services.*;
 import com.theironyard.entities.Gift;
 import com.theironyard.entities.Recipient;
 import com.theironyard.entities.User;
-import com.theironyard.services.GiftRepository;
-import com.theironyard.services.RecipientRepository;
-import com.theironyard.services.UserRepository;
 import com.theironyard.utils.PasswordHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +32,7 @@ public class CheckItTwiceController {
     GiftRepository gifts;
 
 
-    @RequestMapping("/get-user")
+    @RequestMapping(path = "/user", method = RequestMethod.GET)
     public User getUser(HttpSession session) {
         String username = (String) session.getAttribute("username");
         User user = users.findOneByUsername(username);
@@ -45,12 +40,12 @@ public class CheckItTwiceController {
         return user;
     }
 
-    @RequestMapping("get-users")
+    @RequestMapping("/users")
     public List<User> getUsers() {
         return (List<User>) users.findAll();
     }
 
-    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @RequestMapping("/login")
     public void login(@RequestBody LoginParams params, HttpSession session) throws Exception {
 
         User user = users.findOneByUsername(params.username);
@@ -66,7 +61,7 @@ public class CheckItTwiceController {
         session.setAttribute("username", params.username);
     }
 
-    @RequestMapping("/get-recipients")
+    @RequestMapping("/recipients")
     public List<Recipient> getRecipients(HttpSession session) {
         String username = (String) session.getAttribute("username");
         User user = users.findOneByUsername(username);
@@ -75,34 +70,25 @@ public class CheckItTwiceController {
         return recipientsList;
     }
 
-    @RequestMapping("/get-recipient")
-    public Recipient getRecipient(HttpSession session, int id) {
-//        String username = (String) session.getAttribute("username");
-//        User user = users.findOneByUsername(username);
-
+    @RequestMapping(path = "/recipient", method = RequestMethod.GET)
+    public Recipient getRecipient(int id) {
         Recipient recipient = recipients.findOne(id);
         return recipient;
     }
 
-//    @RequestMapping("/get-gifts")
-//    public List<Gift> getGifts(HttpSession session, int id) {
-//        String username = (String) session.getAttribute("username");
-//        User user = users.findOneByUsername(username);
-//        Recipient recipient = recipients.findByUser(user);
-//        List<Gift> giftList = gifts.findAllByRecipientId(recipient.id);
-//        return giftList;
-//    }
-//
-//    @RequestMapping("get-gift")
-//    public Gift getGift(HttpSession session, int id, int recipientId) {
-//        String username = (String) session.getAttribute("username");
-//        User user = users.findOneByUsername(username);
-//        Recipient recipient = recipients.findOneByUserId(user.id);
-//        Gift gift = gifts.findOneByRecipientId(id, recipient.id);
-//        return gift;
-//    }
+    @RequestMapping("/gifts")
+    public List<Gift> getGifts(int id) {
+        List<Gift> giftList = gifts.findAllByRecipientId(id);
+        return giftList;
+    }
 
-    @RequestMapping(path = "/add-recipient", method = RequestMethod.POST)
+    @RequestMapping(path = "/gift", method = RequestMethod.GET)
+    public Gift getGift(int id) {
+        Gift gift = gifts.findOne(id);
+        return gift;
+    }
+
+    @RequestMapping(path = "/recipient", method = RequestMethod.POST)
     public void addRecipient(HttpSession session, @RequestBody RecipientParams params) throws Exception {
         String username = (String) session.getAttribute("username");
         User user = users.findOneByUsername(username);
@@ -116,14 +102,11 @@ public class CheckItTwiceController {
         recipient.budget = params.budget;
         recipient.user = user;
         recipients.save(recipient);
-
-        //user.recipientList.add(recipient);
     }
 
-    @RequestMapping("/add-gift")
+    @RequestMapping(path = "/gift", method = RequestMethod.POST)
     public void addGift(HttpSession session, @RequestBody GiftParams params, int id) throws Exception {
         String username = (String) session.getAttribute("username");
-        User user = users.findOneByUsername(username);
 
         if (username == null) {
             throw new Exception("Not logged in.");
@@ -137,85 +120,73 @@ public class CheckItTwiceController {
         gift.isPurchased = params.isPurchased;
         gift.recipient = recipient;
         gifts.save(gift);
-
-        //recipient.giftList.add(gift);
     }
 
-    @RequestMapping("/add-budget")
-    public void addBudget(HttpSession session, BigDecimal budget) throws Exception {
+    @RequestMapping(path = "/user", method = RequestMethod.POST)
+    public void addBudget(HttpSession session, @RequestBody BudgetParams params) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
         }
 
         User user = users.findOneByUsername(username);
-        user.budget = budget;
+        user.budget = params.budget;
         users.save(user);
     }
 
-    @RequestMapping("/edit-recipient")
-    public void editRecipient(HttpSession session, String name, BigDecimal budget, int id) throws Exception {
+    @RequestMapping(path = "/recipient", method = RequestMethod.PUT)
+    public void editRecipient(HttpSession session, @RequestBody RecipientParams params, int id) throws Exception {
         String username = (String) session.getAttribute("username");
-        User user = users.findOneByUsername(username);
 
-        if (user == null) {
+        if (username == null) {
             throw new Exception("Not logged in.");
         }
 
         Recipient recipient = recipients.findOne(id);
-        recipient.name = name;
-        recipient.budget = budget;
+        recipient.name = params.name;
+        recipient.budget = params.budget;
         recipients.save(recipient);
-
-        //user.recipientList.add(recipient);
     }
 
-    @RequestMapping("/edit-budget")
-    public void editBudget(HttpSession session, BigDecimal budget) throws Exception {
+    @RequestMapping(path = "/user", method = RequestMethod.PUT)
+    public void editBudget(HttpSession session, @RequestBody BudgetParams params) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
         }
 
         User user = users.findOneByUsername(username);
-        user.budget = budget;
+        user.budget = params.budget;
         users.save(user);
     }
 
-    @RequestMapping("/edit-gift")
-    public void editGift(HttpSession session, int id, String name, BigDecimal cost, boolean isPurchased) throws Exception {
+    @RequestMapping(path = "/gift", method = RequestMethod.PUT)
+    public void editGift(HttpSession session, int id, @RequestBody GiftParams params) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
         }
 
-        //Recipient recipient = recipients.findOneById(id);
-
         Gift gift = gifts.findOne(id);
-        gift.name = name;
-        gift.cost = cost;
-        gift.isPurchased = isPurchased;
+        gift.name = params.name;
+        gift.cost = params.cost;
+        gift.isPurchased = params.isPurchased;
         gifts.save(gift);
-
-        //recipient.giftList.add(gift);
     }
 
-    @RequestMapping("/delete-recipient")
+    @RequestMapping(path = "/recipient", method = RequestMethod.DELETE)
     public void deleteRecipient(HttpSession session, Integer id) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
             throw new Exception("Not logged in.");
         }
 
-        User user = users.findOneByUsername(username);
         Recipient recipient = recipients.findOne(id);
 
         recipients.delete(recipient);
-
-        //user.recipientList.remove(recipient);
     }
 
-    @RequestMapping("/delete-gift")
+    @RequestMapping(path = "/gift", method = RequestMethod.DELETE)
     public void deleteGift(HttpSession session, Integer id) throws Exception {
         String username = (String) session.getAttribute("username");
         if (username == null) {
@@ -224,6 +195,5 @@ public class CheckItTwiceController {
 
         Gift gift = gifts.findOne(id);
         gifts.delete(gift);
-
     }
 }
