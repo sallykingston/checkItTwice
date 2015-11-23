@@ -5,28 +5,31 @@ var $ = require('jquery');
 Backbone.$ = $;
 var GiftModelView = require('./giftModelView');
 var GiftCollection = require('./giftCollection');
+var RecipientModel = require('./recipientModel');
+var tmpl = require('./templates');
 
 module.exports = Backbone.View.extend({
   el: '.layoutView',
   collection: null,
-  initialize: function (collection, id) {
+  initialize: function (collection, id, recipient) {
     this.collection = collection;
     this.collection.fetch(id);
+    this.addRecHeader(recipient);
     this.addAll();
+    this.totalCost(recipient);
     this.recipientID = id;
     this.listenTo(this.collection, 'add', this.addAll);
   },
   addOne: function (model){
     var giftModelView = new GiftModelView({model: model});
-    this.$el.prepend(giftModelView.render().el);
-    this.totalCost();
+    this.$el.append(giftModelView.render().el);
+
   },
   addAll: function () {
-    $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
-  totalCost: function(){
+  totalCost: function(recipient){
     console.log('fired');
     var cost = 0;
     _.each(this.collection.models, function(el){
@@ -34,10 +37,19 @@ module.exports = Backbone.View.extend({
       cost += el.attributes.cost;
     });
     console.log(cost);
+    $('.recCosts').html(cost);
+    if(cost>recipient.attributes.budget){
+      this.$el.find('p').addClass("overbudget");
+    }
+  },
+  addRecHeader: function(recipient){
+    template =  _.template(tmpl.recipientHeader);
+    var markup = template(recipient.toJSON());
+    this.$el.prepend(markup);
   }
 });
 
-},{"./giftCollection":3,"./giftModelView":6,"backbone":11,"jquery":12,"underscore":13}],2:[function(require,module,exports){
+},{"./giftCollection":3,"./giftModelView":6,"./recipientModel":17,"./templates":20,"backbone":11,"jquery":12,"underscore":13}],2:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
@@ -76,6 +88,7 @@ Backbone.$ = $;
 var _ = require('underscore');
 var tmpl = require('./templates');
 var GiftModel = require('./giftModel');
+
 module.exports = Backbone.View.extend({
   className: 'giftForm',
   model: null,
@@ -92,15 +105,7 @@ module.exports = Backbone.View.extend({
   },
   addGift: function(e){
     e.preventDefault();
-//     var data = {
-//       giftName: this.$el.find('input[name=createGift]').val(),
-//       giftCost: this.$el.find('input[name=createGiftPrice]').val(),
-//     };
-//     this.model.set(data);
-//     var that = this;
-//     this.model.save().then(function(){
-//       that.collection.add(that.model);
-//     });
+
     console.log("adding gift");
     var newGift = {
       name:this.$el.find('input[name=createGift]').val(),
@@ -13155,12 +13160,16 @@ module.exports = Backbone.Router.extend({
   },
   giftPage: function (recipientID) {
     console.log("you've made it to the gifts page");
-    var giftCollection = new GiftCollection(recipientID);
-    var giftForm = new GiftFormView(recipientID);
-    $('.layoutView').html(giftForm.render().el);
-    giftCollection.fetch().then(function () {
-      console.log("fetched");
-      var giftsView = new GiftCollectionView(giftCollection, recipientID);
+    var recipientCollection = new RecipientCollection();
+    recipientCollection.fetch().then(function () {
+      var recipient = recipientCollection.get(recipientID);
+      var giftCollection = new GiftCollection(recipientID);
+      var giftForm = new GiftFormView(recipientID);
+      $('.layoutView').html(giftForm.render().el);
+      giftCollection.fetch().then(function () {
+        console.log("fetched");
+        var giftsView = new GiftCollectionView(giftCollection, recipientID, recipient);
+      });
     });
   }
 
@@ -13228,7 +13237,15 @@ module.exports = {
       "<input type='text' name='budget' value='' placeholder='Enter Your Total Budget'>",
       "<button type='submit'>Submit</button>",
     "</form>"
-  ].join('')
+  ].join(''),
+  recipientHeader:[
+    "<div class='recHeader'>",
+    "<h3 class='recName'><%= name %></h3>",
+    "<p>Budget: $ <span class = 'recBudget'><%= budget %></span></p>",
+    "<p>Costs: $ <span class = 'recCosts'></span></p>",
+    "</div>"
+    ].join(""),
+
 }
 
 },{}],21:[function(require,module,exports){

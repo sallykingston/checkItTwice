@@ -59,5 +59,13 @@ module.exports = {
       "<input type='text' name='budget' value='' placeholder='Enter Your Total Budget'>",
       "<button type='submit'>Submit</button>",
     "</form>"
-  ].join('')
+  ].join(''),
+  recipientHeader:[
+    "<div class='recHeader'>",
+    "<h3 class='recName'><%= name %></h3>",
+    "<p>Budget: $ <span class = 'recBudget'><%= budget %></span></p>",
+    "<p>Costs: $ <span class = 'recCosts'></span></p>",
+    "</div>"
+    ].join(""),
+
 }

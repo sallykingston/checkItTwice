@@ -4,6 +4,7 @@ Backbone.$ = $;
 var _ = require('underscore');
 var tmpl = require('./templates');
 var GiftModel = require('./giftModel');
+
 module.exports = Backbone.View.extend({
   className: 'giftForm',
   model: null,
@@ -20,15 +21,7 @@ module.exports = Backbone.View.extend({
   },
   addGift: function(e){
     e.preventDefault();
-//     var data = {
-//       giftName: this.$el.find('input[name=createGift]').val(),
-//       giftCost: this.$el.find('input[name=createGiftPrice]').val(),
-//     };
-//     this.model.set(data);
-//     var that = this;
-//     this.model.save().then(function(){
-//       that.collection.add(that.model);
-//     });
+
     console.log("adding gift");
     var newGift = {
       name:this.$el.find('input[name=createGift]').val(),
