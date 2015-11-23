@@ -16,15 +16,24 @@ module.exports = Backbone.View.extend({
     this.recipientID = id;
     this.listenTo(this.collection, 'add', this.addAll);
   },
-  addOne: function (model) {
-    console.log('fire');
+  addOne: function (model){
     var giftModelView = new GiftModelView({model: model});
-    this.$el.append(giftModelView.render().el);
+    this.$el.prepend(giftModelView.render().el);
+    this.totalCost();
   },
   addAll: function () {
-    console.log('fire');
+    $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
     return this;
+  },
+  totalCost: function(){
+    console.log('fired');
+    var cost = 0;
+    _.each(this.collection.models, function(el){
+      console.log(el);
+      cost += el.attributes.cost;
+    });
+    console.log(cost);
   }
 });
 
@@ -72,6 +81,7 @@ module.exports = Backbone.View.extend({
   model: null,
   events:{
     'click #addGift': 'addGift',
+    'click #test': 'totalCost'
   },
   initialize: function(id){
     if(!this.model){
@@ -82,12 +92,26 @@ module.exports = Backbone.View.extend({
   },
   addGift: function(e){
     e.preventDefault();
+//     var data = {
+//       giftName: this.$el.find('input[name=createGift]').val(),
+//       giftCost: this.$el.find('input[name=createGiftPrice]').val(),
+//     };
+//     this.model.set(data);
+//     var that = this;
+//     this.model.save().then(function(){
+//       that.collection.add(that.model);
+//     });
     console.log("adding gift");
     var newGift = {
       name:this.$el.find('input[name=createGift]').val(),
       cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-    // this.model.set(data);
+
+    if(typeof newGift.cost !== 'number'){
+      console.log('yo');
+     newGift.cost = parseInt(newGift.cost);
+    }
+    console.log(typeof newGift.cost);
     console.log(this.model);
     var newModel = new GiftModel(newGift);
     newModel.url = "gift/?id="+this.id;
@@ -111,8 +135,8 @@ var Backbone = require('backbone');
       },
     defaults: function () {
       return {
-        giftName: "null",
-        giftCost: "null"
+        name: "null",
+        cost: "null"
       };
     },
     initialize: function () {},
@@ -198,17 +222,16 @@ var FooterView = require('./footerView');
 var LoginFormView = require('./loginFormView');
 
 module.exports = Backbone.View.extend({
-  el:'.layoutView',
-   initialize: function(){
-    var headerView = new HeaderView();
-    var footerView = new FooterView();
-    var loginFormView = new LoginFormView();
-
-    $('header').html(headerView.render().el);
-    this.$el.html(loginFormView.renderLogin().el);
-    $('footer').html(footerView.render().el);
-   }
- });
+ el:'.layoutView',
+  initialize: function(){
+   var headerView = new HeaderView();
+   var footerView = new FooterView();
+   var loginFormView = new LoginFormView();
+   $('header').html(headerView.render().el);
+   this.$el.html(loginFormView.renderLogin().el);
+   $('footer').html(footerView.render().el);
+  }
+});
 
 },{"./footerView":2,"./headerView":7,"./loginFormView":9,"backbone":11,"jquery":12,"underscore":13}],9:[function(require,module,exports){
 var Backbone = require('backbone');
@@ -13200,6 +13223,13 @@ module.exports = {
       "<button type='submit' id='addRecipientBtn' class='addRecipient'>Add Recipient</button>",
     "</form>"
   ].join(''),
+  budgetForm: [
+    "<form class='addBudget'>",
+      "<h2>Input Budget</h2>",
+      "<input type='text' name='budget' value='' placeholder='Enter Your Total Budget'>",
+      "<button type='submit'>Submit</button>",
+    "</form>"
+  ].join('')
 }
 
 },{}],21:[function(require,module,exports){
@@ -13211,7 +13241,7 @@ module.exports = Backbone.Model.extend({
   defaults:{
     username: '',
     password: '',
-    // budget: '',
+    budget: 0,
     // recipientList: ''
   },
   initialize: function(){

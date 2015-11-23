@@ -9,6 +9,7 @@ module.exports = Backbone.View.extend({
   model: null,
   events:{
     'click #addGift': 'addGift',
+    'click #test': 'totalCost'
   },
   initialize: function(id){
     if(!this.model){
@@ -19,12 +20,26 @@ module.exports = Backbone.View.extend({
   },
   addGift: function(e){
     e.preventDefault();
+//     var data = {
+//       giftName: this.$el.find('input[name=createGift]').val(),
+//       giftCost: this.$el.find('input[name=createGiftPrice]').val(),
+//     };
+//     this.model.set(data);
+//     var that = this;
+//     this.model.save().then(function(){
+//       that.collection.add(that.model);
+//     });
     console.log("adding gift");
     var newGift = {
       name:this.$el.find('input[name=createGift]').val(),
       cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-    // this.model.set(data);
+
+    if(typeof newGift.cost !== 'number'){
+      console.log('yo');
+     newGift.cost = parseInt(newGift.cost);
+    }
+    console.log(typeof newGift.cost);
     console.log(this.model);
     var newModel = new GiftModel(newGift);
     newModel.url = "gift/?id="+this.id;

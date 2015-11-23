@@ -6,8 +6,8 @@ var Backbone = require('backbone');
       },
     defaults: function () {
       return {
-        giftName: "null",
-        giftCost: "null"
+        name: "null",
+        cost: "null"
       };
     },
     initialize: function () {},
