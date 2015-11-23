@@ -6,11 +6,12 @@ var tmpl = require('./templates');
 
 module.exports = Backbone.View.extend({
   tagName: 'article',
-  classname: 'recipient',
+  className: 'recipient',
   template: _.template(tmpl.recipient),
   events: {
     'click .glyphicon-pencil': 'editRecipientInfo',
     'click .glyphicon-trash': 'deleteRecipient',
+    'click .glyphicon-gift': 'addGifts',
     'keypress h3,span': 'updateRecipient',
   },
   render: function () {
@@ -19,13 +20,14 @@ module.exports = Backbone.View.extend({
     return this;
   },
   initialize: function () {},
-  editRecipientInfo: function () {
+  editRecipientInfo: function (e) {
     e.preventDefault();
+    console.log("editing");
     var recipientText = this.$el.find("span,h3");
     recipientText.attr("contenteditable",true);
     recipientText.toggleClass("editable");
   },
-  updateRecipient: function () {
+  updateRecipient: function (e) {
     if(e.charCode===13){
       var recipientEl = this.$el;
       var recipientText = recipientEl.find("p,h3");
@@ -34,14 +36,21 @@ module.exports = Backbone.View.extend({
       var recipient = this.model;
       var name = recipientEl.find("h3").text().trim();
       var budget =recipientEl.find("span").text().trim();
-      recipient.save({name: name, budget:budget});
-    }
+      recipient.save({id: recipient.attributes.id, name: name, budget:budget});
+
+    };
   },
-  deleteRecipient: function (){
-      var recipientEl = this.$el;
-      var recipient = this.model;
-      recipient.destroy();
-      recipientEl.remove();
+  deleteRecipient: function (e){
+    e.preventDefault();
+    console.log("deleting");
+    var recipientEl = this.$el;
+    var recipient = this.model;
+    recipient.destroy();
+    recipientEl.remove();
+  },
+  addGifts: function (e) {
+    e.preventDefault();
+    window.location.hash = 'gifts/'+this.model.attributes.id;
   }
 
 });

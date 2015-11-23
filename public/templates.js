@@ -1,7 +1,9 @@
 module.exports = {
   gift: [
-    "<h3><%= giftName %></h3>",
-    "<h3><%= giftCost %></h3>",
+    "<h3 id = 'giftName'><%= name %></h3>",
+    "<h3 id = 'giftCost'><%= cost %></h3>",
+    "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
   ].join(''),
   header: [
       "<h1>Check It Twice</h1>"
@@ -27,20 +29,20 @@ module.exports = {
     "</form>",
   ].join(''),
   giftForm: [
-    "<form class='giftPost' action='index.html' method='post'>",
+    "<form class='giftPost'>",
       "<h2 class='giftName'>Input Gift Name: </h2>",
       "<input type='text' name='createGift' value='' placeholder='Enter the Gifts Name'>",
       "<h2 class='giftPrice'>Input Gift Price: </h2>",
       "<input type='text' name='createGiftPrice' value='' placeholder='Enter the Gifts Price'>",
-      "<button type='submit' name='addGift' class='addGift'>Add Gift</button>",
+      "<button type='submit' name='addGift' id='addGift'>Add Gift</button>",
     "</form>",
-    "<button type='button' name='name' class='test'>click</button>"
   ].join(''),
   recipient: [
     "<h3 class='recName'><%= name %></h3>",
-    "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>",
-    "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span>",
-    // "<%= typeof(budget)!== 'undefined' ?  '<p>Budget: <span class = 'recBudget'><%= budget %></span></p>' : '' %>",
+    "<span class='glyphicon glyphicon-pencil' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-trash' aria-hidden='false'></span>",
+    "<span class='glyphicon glyphicon-gift' aria-hidden='false'></span>",
+    "<p>Budget: <span class = 'recBudget'><%= budget %></span></p>",
     "<ul class = 'gifts'></ul>"
   ].join(""),
   recipientForm: [

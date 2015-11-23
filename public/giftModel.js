@@ -1,12 +1,13 @@
 var Backbone = require('backbone');
 
   module.exports = Backbone.Model.extend({
-    urlRoot: "http://tiny-tiny.herokuapp.com/collections/checkItTwiceGifts2",
-    idAttribute: "_id",
+    url: function(){ "gift/"
+        return "gift/?id=" +this.get("id");
+      },
     defaults: function () {
       return {
         giftName: "null",
-        giftCost: "null",
+        giftCost: "null"
       };
     },
     initialize: function () {},
