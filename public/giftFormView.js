@@ -34,12 +34,9 @@ module.exports = Backbone.View.extend({
       name:this.$el.find('input[name=createGift]').val(),
       cost:this.$el.find('input[name=createGiftPrice]').val(),
     };
-
     if(typeof newGift.cost !== 'number'){
-      console.log('yo');
      newGift.cost = parseInt(newGift.cost);
     }
-    console.log(typeof newGift.cost);
     console.log(this.model);
     var newModel = new GiftModel(newGift);
     newModel.url = "gift/?id="+this.id;

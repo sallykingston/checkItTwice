@@ -13,7 +13,6 @@ module.exports = Backbone.View.extend({
   initialize: function(){
     if(!this.model){
       this.model = new UserModel();
-
     }
   },
   addGift: function(e){

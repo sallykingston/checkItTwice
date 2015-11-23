@@ -9,7 +9,7 @@ var RecipientFormView = require('./recipientFormView');
 var GiftCollectionView = require('./GiftCollectionView');
 var GiftCollection = require('./giftCollection');
 var GiftFormView = require('./giftFormView');
-
+var BudgetFormView = require('./budgetFormView');
 
 module.exports = Backbone.Router.extend({
   routes: {
@@ -30,7 +30,9 @@ module.exports = Backbone.Router.extend({
     console.log("you've made it to the recipients page");
     var recipientCollection = new RecipientCollection();
     var recipientForm = new RecipientFormView();
+    var budgetForm = new BudgetFormView();
     $('.layoutView').html(recipientForm.render().el);
+    $('.layoutView').append(budgetForm.render().el);
     recipientCollection.fetch().then(function () {
       console.log("fetched");
       var recipientsView = new RecipientCollectionView(recipientCollection);
