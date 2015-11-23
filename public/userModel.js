@@ -6,7 +6,7 @@ module.exports = Backbone.Model.extend({
   defaults:{
     username: '',
     password: '',
-    // budget: '',
+    budget: 0,
     // recipientList: ''
   },
   initialize: function(){

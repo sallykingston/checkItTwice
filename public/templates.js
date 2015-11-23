@@ -53,4 +53,11 @@ module.exports = {
       "<button type='submit' id='addRecipientBtn' class='addRecipient'>Add Recipient</button>",
     "</form>"
   ].join(''),
+  budgetForm: [
+    "<form class='addBudget'>",
+      "<h2>Input Budget</h2>",
+      "<input type='text' name='budget' value='' placeholder='Enter Your Total Budget'>",
+      "<button type='submit'>Submit</button>",
+    "</form>"
+  ].join('')
 }

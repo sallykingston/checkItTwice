@@ -15,14 +15,23 @@ module.exports = Backbone.View.extend({
     this.recipientID = id;
     this.listenTo(this.collection, 'add', this.addAll);
   },
-  addOne: function (model) {
-    console.log('fire');
+  addOne: function (model){
     var giftModelView = new GiftModelView({model: model});
-    this.$el.append(giftModelView.render().el);
+    this.$el.prepend(giftModelView.render().el);
+    this.totalCost();
   },
   addAll: function () {
-    console.log('fire');
+    $('.giftsList').html('');
     _.each(this.collection.models, this.addOne, this);
     return this;
+  },
+  totalCost: function(){
+    console.log('fired');
+    var cost = 0;
+    _.each(this.collection.models, function(el){
+      console.log(el);
+      cost += el.attributes.cost;
+    });
+    console.log(cost);
   }
 });
