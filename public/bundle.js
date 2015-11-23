@@ -26,6 +26,7 @@ module.exports = Backbone.View.extend({
 
   },
   addAll: function () {
+    this.$el.find('article').remove();
     _.each(this.collection.models, this.addOne, this);
     return this;
   },
@@ -141,8 +142,6 @@ module.exports = Backbone.View.extend({
   },
   addGift: function(e){
     e.preventDefault();
-
-    console.log("adding gift");
     var newGift = {
       name:this.$el.find('input[name=createGift]').val(),
       cost:this.$el.find('input[name=createGiftPrice]').val(),
@@ -150,7 +149,6 @@ module.exports = Backbone.View.extend({
     if(typeof newGift.cost !== 'number'){
      newGift.cost = parseInt(newGift.cost);
     }
-    console.log(this.model);
     var newModel = new GiftModel(newGift);
     newModel.url = "gift/?id="+this.id;
     newModel.save(newGift);

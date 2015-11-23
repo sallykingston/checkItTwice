@@ -139,3 +139,7 @@ header, footer {
 .overbudget::before, .overbudget::after{
   content:'*****';
 }
+
+.glyphicon:hover{
+  font-size:2.5em;
+}
